@@ -1,0 +1,19 @@
+[user]
+    name = Connor Tsui
+    email = connor.tsui20@gmail.com
+[init]
+    defaultBranch = main
+[core]
+    editor = hx
+[alias]
+    c = commit
+    ch = checkout
+    s = status --short
+    st = status
+    a = add
+[fetch]
+    prune = true
+[ui "color"]
+    ui = always
+[color]
+    ui = true
