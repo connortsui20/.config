@@ -6,7 +6,7 @@ echo ""
 # clear
 
 if status is-interactive
-	neofetch
+    neofetch
 end
 
 # Setup all environment variables
@@ -23,23 +23,23 @@ abbr -a "configs" "cd ~/.config"
 
 # Replace ls with exa
 if command -v exa > /dev/null
-	abbr -a "ls" "exa"
-	abbr -a "la" "exa -a"
-	abbr -a "ll" "exa -al"
-	abbr -a "lst" "exa --tree"
+    abbr -a "ls" "exa"
+    abbr -a "la" "exa -a"
+    abbr -a "ll" "exa -al"
+    abbr -a "lst" "exa --tree"
 else
-	abbr -a "la" "ls -a"
-	abbr -a "ll" "ls -al"
+    abbr -a "la" "ls -a"
+    abbr -a "ll" "ls -al"
 end
 
 # Type - to move up to top parent dir which is a repository
 function d
-	while test $PWD != $HOME
-		if test -d .git
-			break
-		end
-		cd ..
-	end
+    while test $PWD != $HOME
+        if test -d .git
+            break
+        end
+        cd ..
+    end
 end
 
 
