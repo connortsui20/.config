@@ -10,6 +10,7 @@ if status is-interactive
 end
 
 # Setup all environment variables
+set -gx EDITOR "hx"
 set -gx XDG_CONFIG_HOME "$HOME/.config"
 set -gx HELIX_RUNTIME "$HOME/.config/helix/runtime"
 fish_add_path "$HOME/.cargo/bin"
