@@ -1,7 +1,9 @@
+clear
+
 # Add git ssh keys
 eval (ssh-agent -c) > /dev/null
-ssh-add "$HOME/.ssh/desktop_personal_key"
-ssh-add "$HOME/.ssh/desktop_cmu_key"
+ssh-add "$HOME/.ssh/git_personal_key"
+ssh-add "$HOME/.ssh/git_cmu_key"
 echo ""
 # clear
 

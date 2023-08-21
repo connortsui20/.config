@@ -17,3 +17,5 @@
     ui = always
 [color]
     ui = true
+[advice]
+    addIgnoredFile = false
