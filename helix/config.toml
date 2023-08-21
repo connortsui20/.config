@@ -15,11 +15,11 @@ gutters = ["diff", "diagnostics", "line-numbers", "spacer"]
 
 [editor.statusline]
 left = [
-  "mode", "version-control", "file-name", "read-only-indicator", "file-modification-indicator"
+  "mode", "spacer", "version-control", "file-name", "read-only-indicator", 
+  "file-modification-indicator"
 ]
 center = ["diagnostics", "spinner", "selections"]
 right = ["position", "total-line-numbers", "file-encoding", "mode"]
-# separator = " "
 mode.normal = "NORMAL"
 mode.insert = "INSERT"
 mode.select = "SELECT"
