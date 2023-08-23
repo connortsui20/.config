@@ -11,6 +11,7 @@
     s = status --short
     st = status
     a = add
+    d = diff
 [fetch]
     prune = true
 [ui "color"]

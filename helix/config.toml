@@ -49,11 +49,12 @@ max-depth = 4
 smart-case = false
 
 [editor.whitespace.render]
+space = "all"
 tab = "all"
 
 [editor.indent-guides]
 render = true
-character = "▏"
+# character = "▏"
 
 [editor.soft-wrap]
 enable = true
