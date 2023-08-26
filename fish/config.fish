@@ -1,4 +1,4 @@
-clear
+set fish_greeting ""
 
 # Add git ssh keys
 eval (ssh-agent -c) > "/dev/null"
