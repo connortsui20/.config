@@ -8,6 +8,7 @@
 [alias]
     c = commit
     ch = checkout
+    b = branch
     s = status --short
     st = status
     a = add
