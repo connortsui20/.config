@@ -82,8 +82,8 @@ k = { j = ["keep_primary_selection", "normal_mode", ":w"] }
 C-s = ":w"
 
 # Moving selection up and down lines
-A-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
-A-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
+C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
 
 # Be able to add cursors in normal mode instead of select mode
 n = "extend_search_next"
