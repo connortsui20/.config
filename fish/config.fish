@@ -16,8 +16,6 @@ end
 # Setup all environment variables
 set -gx EDITOR "hx"
 set -gx XDG_CONFIG_HOME "$HOME/.config"
-fish_add_path "$HOME/.cargo/bin"
-fish_add_path "$HOME/.local/bin"
 
 # Abbreviations
 abbr -a "pd" "cd .."
