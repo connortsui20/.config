@@ -1,3 +1,4 @@
+# Remove the default fish greeting
 set fish_greeting ""
 
 # Add git ssh keys
@@ -18,10 +19,10 @@ set -gx XDG_CONFIG_HOME "$HOME/.config"
 fish_add_path "$HOME/.cargo/bin"
 fish_add_path "$HOME/.local/bin"
 
+# Abbreviations
 abbr -a "pd" "cd .."
 abbr -a "c" "cargo"
 abbr -a "g" "git"
-abbr -a "python" "python3"
 abbr -a "configs" "cd ~/.config"
 
 # Replace ls with exa
