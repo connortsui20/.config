@@ -22,6 +22,7 @@ abbr -a "pd" "cd .."
 abbr -a "c" "cargo"
 abbr -a "g" "git"
 abbr -a "configs" "cd ~/.config"
+abbr -a "bustub" "cd ~/CMU/CMU-F23/15-445/mybustub"
 
 # Replace ls with exa
 if command -v "exa" > "/dev/null"
