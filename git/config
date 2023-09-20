@@ -7,10 +7,8 @@
     editor = hx
 [alias]
     c = commit
-    ch = checkout
     b = branch
-    s = status --short
-    st = status
+    s = status
     a = add
     d = diff
 [fetch]
