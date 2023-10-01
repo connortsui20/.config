@@ -5,6 +5,7 @@
     defaultBranch = main
 [core]
     editor = hx
+    excludesFile = "~/.config/git/.gitignore"
 [alias]
     c = commit
     b = branch
