@@ -25,6 +25,7 @@ abbr -a "configs" "cd ~/.config"
 abbr -a "bustub" "cd ~/CMU/CMU-F23/15-445/mybustub"
 abbr -a "451" "cd ~/CMU/CMU-F23/15-451"
 abbr -a "445" "cd ~/CMU/CMU-F23/15-445"
+abbr -a "stuco" "cd ~/CMU/rust-stuco"
 
 # Replace ls with exa
 if command -v "exa" > "/dev/null"
