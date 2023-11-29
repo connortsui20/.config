@@ -6,6 +6,7 @@
 [core]
     editor = hx
     excludesFile = "~/.config/git/.gitignore"
+	autocrlf = input
 [alias]
     c = commit
     b = branch
