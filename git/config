@@ -9,6 +9,9 @@
 	autocrlf = input
 [alias]
     c = commit
+    ch = checkout
+    p = pull
+    ps = push
     b = branch
     s = status
     a = add
