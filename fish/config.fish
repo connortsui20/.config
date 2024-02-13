@@ -23,8 +23,9 @@ abbr -a "c" "cargo"
 abbr -a "g" "git"
 abbr -a "configs" "cd ~/.config"
 abbr -a "stuco" "cd ~/CMU/rust-stuco"
-abbr -a "afs" "ssh cjtsui@linux.andrew.cmu.edu"
+abbr -a "afs" "ssh -X cjtsui@linux.andrew.cmu.edu"
 abbr -a "410" "cd ~/CMU/CMU-S24/15-410"
+abbr -a "721" "cd ~/CMU/CMU-S24/15-721/15721-s24-ee1"
 
 # Replace ls with exa
 if command -v "exa" > "/dev/null"
