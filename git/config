@@ -12,7 +12,8 @@
     ch = checkout
     p = pull
     ps = push
-    b = branch -a
+    ba = branch -a
+    b = branch
     s = status
     a = add
     d = diff
