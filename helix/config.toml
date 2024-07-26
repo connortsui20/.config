@@ -1,4 +1,5 @@
 theme = "tokyonight"
+# theme = "github_light"
 
 [editor]
 scrolloff = 10
@@ -36,7 +37,6 @@ select = "underline"
 [editor.file-picker]
 hidden = false # Would like the ability toggle hidden in case of a lot of hidden files
 git-ignore = false # Want to still see files that are not being tracked
-max-depth = 6
 
 [editor.auto-pairs]
 # Only want these only brackets and not string-type words except '"'

@@ -1,4 +1,6 @@
 import = ["/home/connor/.config/alacritty/alacritty-theme/themes/tokyo-night.toml"]
+# import = ["/home/connor/.config/alacritty/alacritty-theme/themes/github_light.toml"]
+
 
 [cursor]
 blink_interval = 500
