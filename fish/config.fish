@@ -39,6 +39,11 @@ else
     abbr -a ll "ls -al"
 end
 
+# Replace cat with bat
+if command -v bat >/dev/null
+    abbr -a cat bat
+end
+
 # Type d to move up to top parent dir which is a repository
 function d
     while test $PWD != $HOME
