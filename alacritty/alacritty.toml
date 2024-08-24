@@ -32,5 +32,6 @@ hide_when_typing = false
 save_to_clipboard = true
 
 [shell]
-args = ["-l", "-c", "tmux"]
 program = "/usr/bin/fish"
+args = ["-l", "-c", "/usr/bin/zellij -l welcome"]
+# args = ["-l", "-c", "tmux"]

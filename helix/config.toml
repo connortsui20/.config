@@ -36,14 +36,14 @@ select = "underline"
 
 [editor.file-picker]
 hidden = false # Would like the ability toggle hidden in case of a lot of hidden files
-git-ignore = false # Want to still see files that are not being tracked
+# git-ignore = false # Want to still see files that are not being tracked
 
 [editor.auto-pairs]
 # Only want these only brackets and not string-type words except '"'
-'(' = ')'
+# '(' = ')'
 '{' = '}'
 '[' = ']'
-'"' = '"'
+# '"' = '"'
 
 [editor.search]
 smart-case = false
@@ -57,8 +57,8 @@ render = true
 # character = "▏"
 
 [editor.soft-wrap]
-enable = true
-wrap-at-text-width = true
+# enable = true
+# wrap-at-text-width = true
 
 ####################################################################################################
 
