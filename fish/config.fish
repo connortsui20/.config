@@ -25,8 +25,8 @@ abbr -a configs "cd ~/.config"
 abbr -a stuco "cd ~/CMU/rust-stuco"
 abbr -a afs "ssh -X cjtsui@linux.andrew.cmu.edu"
 abbr -a sshome "ssh connor@home.connortsui.com -p 2020"
-abbr -a 410 "cd ~/CMU/CMU-S24/15-410"
-abbr -a 721 "cd ~/CMU/CMU-S24/15-721/15721-s24-ee1"
+abbr -a 445 "cd ~/CMU/CMU-F24/15-445"
+abbr -a 363 "cd ~/CMU/CMU-F24/17-363"
 
 # Replace ls with exa
 if command -v exa >/dev/null
