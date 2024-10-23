@@ -1,5 +1,3 @@
-import = ["/home/connor/.config/alacritty/alacritty-theme/themes/tokyo-night.toml"]
-# import = ["/home/connor/.config/alacritty/alacritty-theme/themes/github_light.toml"]
 
 
 [cursor]
@@ -31,7 +29,13 @@ hide_when_typing = false
 [selection]
 save_to_clipboard = true
 
-[shell]
+[general]
+import = ["/home/connor/.config/alacritty/alacritty-theme/themes/tokyo-night.toml"]
+# import = ["/home/connor/.config/alacritty/alacritty-theme/themes/github_light.toml"]
+
+[terminal]
+
+[terminal.shell]
 program = "/usr/bin/fish"
 args = ["-l", "-c", "/usr/bin/zellij -l welcome"]
 # args = ["-l", "-c", "tmux"]
