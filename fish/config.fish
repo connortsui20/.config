@@ -29,6 +29,7 @@ abbr -a afs "ssh -X cjtsui@linux.andrew.cmu.edu"
 abbr -a sshome "ssh connor@home.connortsui.com -p 2020"
 abbr -a 445 "cd ~/CMU/CMU-F24/15-445"
 abbr -a 363 "cd ~/CMU/CMU-F24/17-363"
+abbr -a sasy "java -jar ~/CMU/CMU-F24/17-363/bin/org.sasylf_1.5.1.v20210902.jar"
 
 # Replace ls with exa
 if command -v exa >/dev/null
