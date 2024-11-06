@@ -10,13 +10,13 @@
 [alias]
     c = commit
     ch = checkout
-    p = pull
-    ps = push
     ba = branch -a
     b = branch
     s = status
     a = add
     d = diff
+    r = rebase
+    f = fetch
 [fetch]
     prune = true
 [ui "color"]

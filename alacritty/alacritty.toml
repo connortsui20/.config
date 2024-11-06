@@ -35,5 +35,5 @@ import = ["/home/connor/.config/alacritty/alacritty-theme/themes/tokyo-night.tom
 
 [terminal.shell]
 program = "/usr/bin/fish"
-args = ["-l", "-c", "/usr/bin/zellij -l welcome"]
+args = ["-l", "-c", "/usr/bin/zellij -l compact"]
 # args = ["-l", "-c", "tmux"]
