@@ -21,6 +21,7 @@ set -gx XDG_CONFIG_HOME "$HOME/.config"
 abbr -a pd "cd .."
 abbr -a c cargo
 abbr -a g git
+abbr -a gp git push
 abbr -a m "make -j (nproc)"
 abbr -a mc "make clean"
 abbr -a configs "cd ~/.config"
