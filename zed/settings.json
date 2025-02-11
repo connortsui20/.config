@@ -54,6 +54,19 @@
     "enabled": false,
     "show_background": true
   },
+  "languages": {
+    "Python": {
+      "language_servers": ["pyright", "ruff"],
+      "formatter": [
+        {
+          "code_actions": {
+            "source.fixAll.ruff": true,
+            "source.organizeImports.ruff": true
+          }
+        }
+      ]
+    }
+  },
   "lsp": {
     "rust-analyzer": {
       "initialization_options": {
@@ -69,6 +82,13 @@
         },
         "checkOnSave": {
           "command": "clippy"
+        }
+      }
+    },
+    "ruff": {
+      "initialization_options": {
+        "settings": {
+          "lineLength": 100
         }
       }
     }
