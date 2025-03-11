@@ -4,9 +4,17 @@ name = "rust"
 [language-server.rust-analyzer.config.check]
 command = "clippy"
 
-[language-server.ruff-lsp]
-command = "ruff-lsp"
-
 [[language]]
 name = "python"
-language-servers = [ "ruff-lsp" ]
+language-servers = ["ruff", "pylsp"]
+auto-format = true
+
+[language-server.pylsp.config.pylsp.plugins]
+flake8 = { enabled = false }
+autopep8 = { enabled = false }
+mccabe = { enabled = false }
+pycodestyle = { enabled = false }
+pyflakes = { enabled = false }
+pylint = { enabled = false }
+yapf = { enabled = false }
+ruff = { enabled = false }
