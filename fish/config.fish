@@ -25,7 +25,7 @@ abbr -a gp git push
 abbr -a m "make -j (nproc)"
 abbr -a mc "make clean"
 abbr -a configs "cd ~/.config"
-abbr -a configs "cd ~/projects"
+abbr -a projects "cd ~/projects"
 abbr -a stuco "cd ~/CMU/rust-stuco"
 abbr -a afs "ssh -X cjtsui@linux.andrew.cmu.edu"
 abbr -a sshome "ssh connor@home.connortsui.com -p 2020"
