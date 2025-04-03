@@ -36,8 +36,6 @@
     ui = always
 [color]
     ui = true
-[column]
-    ui = auto
 [branch]
     sort = -committerdate
 [tag]
@@ -48,6 +46,9 @@
     autocorrect = prompt
 [alias]
     c = commit
+    cam = commit --all --message
+    camd = commit --amend
+    caamd = commit --all --amend
     ch = checkout
     ba = branch -a
     b = branch
@@ -56,3 +57,6 @@
     d = diff
     r = rebase
     f = fetch
+    pl = pull
+    ps = push
+    psf = push --force-with-lease
