@@ -46,17 +46,11 @@
     autocorrect = prompt
 [alias]
     c = commit
-    cam = commit --all --message
-    camd = commit --amend
-    caamd = commit --all --amend
     ch = checkout
-    ba = branch -a
     b = branch
+    ba = branch -a
     s = status
     a = add
+    am = commit --amend
     d = diff
     r = rebase
-    f = fetch
-    pl = pull
-    ps = push
-    psf = push --force-with-lease
