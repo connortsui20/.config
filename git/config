@@ -51,6 +51,6 @@
     ba = branch -a
     s = status
     a = add
-    am = commit --amend
+    amd = commit --amend
     d = diff
     r = rebase
