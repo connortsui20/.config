@@ -3,14 +3,13 @@ set fish_greeting ""
 
 # Add git ssh keys.
 eval (ssh-agent -c) >/dev/null
-ssh-add "$HOME/.ssh/git_personal_key"
-ssh-add "$HOME/.ssh/git_cmu_key"
+ssh-add "$HOME/.ssh/git"
 clear
 
 echo ""
 
 if status is-interactive
-    neofetch
+    fastfetch
 end
 
 # Set up all environment variables.
@@ -18,6 +17,7 @@ set -gx EDITOR hx
 set -gx XDG_CONFIG_HOME "$HOME/.config"
 
 # Abbreviations.
+abbr -a cd z
 abbr -a pd "cd .."
 abbr -a c cargo
 abbr -a g git
@@ -27,8 +27,12 @@ abbr -a mc "make clean"
 abbr -a configs "cd ~/.config"
 abbr -a projects "cd ~/projects"
 abbr -a stuco "cd ~/CMU/rust-stuco"
-abbr -a afs "ssh -X cjtsui@linux.andrew.cmu.edu"
 abbr -a sshome "ssh connor@home.connortsui.com -p 2020"
+
+# Replace `cd` with `z` (`zoxide`).
+if command -v z >/dev/null
+    abbr -a cd z
+end
 
 # Replace `ls` with `exa`.
 if command -v exa >/dev/null
@@ -57,3 +61,5 @@ function d
 end
 
 starship init fish | source
+
+zoxide init fish | source
