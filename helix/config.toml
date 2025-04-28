@@ -57,8 +57,8 @@ render = true
 # character = "▏"
 
 [editor.soft-wrap]
-# enable = true
-# wrap-at-text-width = true
+enable = true
+wrap-at-text-width = true
 
 ####################################################################################################
 

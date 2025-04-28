@@ -26,9 +26,9 @@
   },
   "base_keymap": "VSCode",
   "ui_font_size": 16,
-  "ui_font_family": "Source Code Pro",
+  "ui_font_family": "Noto Sans Mono",
   "buffer_font_size": 14,
-  "buffer_font_family": "Source Code Pro",
+  "buffer_font_family": "Noto Sans Mono",
   "theme": {
     "mode": "system",
     "light": "One Light",
@@ -41,7 +41,7 @@
   "terminal": {
     "dock": "right",
     "font_size": 12,
-    "font_family": "Source Code Pro"
+    "font_family": "Noto Sans Mono"
   },
   "autosave": {
     "after_delay": {

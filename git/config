@@ -7,21 +7,50 @@
     editor = hx
     excludesFile = "~/.config/git/.gitignore"
 	autocrlf = input
-[alias]
-    c = commit
-    ch = checkout
-    ba = branch -a
-    b = branch
-    s = status
-    a = add
-    d = diff
-    r = rebase
-    f = fetch
+    fsmonitor = true
+    untrackedCache = true
+[pull]
+    rebase = true
 [fetch]
     prune = true
+    pruneTags = true
+    all = true
+[push]
+    autoSetupRemote = true
+    followTags = true
+[diff]
+    algorithm = histogram
+    colorMoved = plain
+    mnemonicPrefix = true
+    renames = true
+[rerere]
+    enabled = true
+    autoupdate = true
+[rebase]
+    autoSquash = true
+    autoStash = true
+    updateRefs = true
+[commit]
+    verbose = true
 [ui "color"]
     ui = always
 [color]
     ui = true
+[branch]
+    sort = -committerdate
+[tag]
+    sort = version:refname
 [advice]
     addIgnoredFile = false
+[help]
+    autocorrect = prompt
+[alias]
+    c = commit
+    ch = checkout
+    b = branch
+    ba = branch -a
+    s = status
+    a = add
+    amd = commit --amend
+    d = diff
+    r = rebase
