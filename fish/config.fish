@@ -18,15 +18,12 @@ set -gx XDG_CONFIG_HOME "$HOME/.config"
 
 # Abbreviations.
 abbr -a cd z
-abbr -a pd "cd .."
+abbr -a pd "z .."
 abbr -a c cargo
 abbr -a g git
 abbr -a gp git push
 abbr -a m "make -j (nproc)"
 abbr -a mc "make clean"
-abbr -a configs "cd ~/.config"
-abbr -a projects "cd ~/projects"
-abbr -a stuco "cd ~/CMU/rust-stuco"
 abbr -a sshome "ssh connor@home.connortsui.com -p 2020"
 
 # Replace `cd` with `z` (`zoxide`).
@@ -60,6 +57,8 @@ function d
     end
 end
 
+# Initialize starship prompter.
 starship init fish | source
 
+# Initialize zoxide autojumper.
 zoxide init fish | source
