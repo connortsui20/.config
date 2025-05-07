@@ -1,13 +1,6 @@
 # Remove the default fish greeting.
 set fish_greeting ""
 
-# Add git ssh keys.
-eval (ssh-agent -c) >/dev/null
-ssh-add "$HOME/.ssh/git"
-clear
-
-echo ""
-
 if status is-interactive
     fastfetch
 end
