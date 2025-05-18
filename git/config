@@ -1,6 +1,7 @@
 [user]
     name = Connor Tsui
     email = connor.tsui20@gmail.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKMdThS1ecL0QU6yGTyQFYDqIGBqn4cZBjlNdsQnF/hZ
 [init]
     defaultBranch = main
 [core]
@@ -32,6 +33,7 @@
     updateRefs = true
 [commit]
     verbose = true
+	gpgsign = true
 [ui "color"]
     ui = always
 [color]
@@ -54,3 +56,7 @@
     amd = commit --amend
     d = diff
     r = rebase
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /opt/1Password/op-ssh-sign
