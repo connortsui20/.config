@@ -28,7 +28,7 @@ hide_when_typing = false
 save_to_clipboard = true
 
 [general]
-import = ["/home/connor/.config/alacritty/alacritty-theme/themes/tokyo_night.toml"]
+import = ["/home/connor/.config/alacritty/alacritty-theme/themes/tokyo_night_enhanced.toml"]
 # import = ["/home/connor/.config/alacritty/alacritty-theme/themes/github_light.toml"]
 
 [terminal]
