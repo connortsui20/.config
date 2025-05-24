@@ -24,12 +24,12 @@ if command -v z >/dev/null
     abbr -a cd z
 end
 
-# Replace `ls` with `exa`.
-if command -v exa >/dev/null
-    abbr -a ls exa
-    abbr -a la "exa -a"
-    abbr -a ll "exa -al"
-    abbr -a lst "exa --tree"
+# Replace `ls` with `eza`.
+if command -v eza >/dev/null
+    abbr -a ls eza
+    abbr -a la "eza -a"
+    abbr -a ll "eza -al"
+    abbr -a lst "eza --tree"
 else
     abbr -a la "ls -a"
     abbr -a ll "ls -al"
