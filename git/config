@@ -1,15 +1,16 @@
 [user]
     name = Connor Tsui
     email = connor.tsui20@gmail.com
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKMdThS1ecL0QU6yGTyQFYDqIGBqn4cZBjlNdsQnF/hZ
+    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKMdThS1ecL0QU6yGTyQFYDqIGBqn4cZBjlNdsQnF/hZ
 [init]
     defaultBranch = main
 [core]
     editor = hx
     excludesFile = "~/.config/git/.gitignore"
-	autocrlf = input
+    autocrlf = input
     fsmonitor = true
     untrackedCache = true
+    pager = delta
 [pull]
     rebase = true
 [fetch]
@@ -24,6 +25,12 @@
     colorMoved = plain
     mnemonicPrefix = true
     renames = true
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true
+[merge]
+    conflictStyle = zdiff3
 [rerere]
     enabled = true
     autoupdate = true
@@ -33,7 +40,7 @@
     updateRefs = true
 [commit]
     verbose = true
-	gpgsign = true
+    gpgsign = true
 [ui "color"]
     ui = always
 [color]
@@ -57,6 +64,6 @@
     d = diff
     r = rebase
 [gpg]
-	format = ssh
+    format = ssh
 [gpg "ssh"]
-	program = /opt/1Password/op-ssh-sign
+    program = /opt/1Password/op-ssh-sign
