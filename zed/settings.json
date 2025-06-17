@@ -7,23 +7,6 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "collaboration_panel": {
-    "dock": "right"
-  },
-  "features": {
-    "edit_prediction_provider": "zed"
-  },
-  "edit_predictions": {
-    "mode": "subtle"
-  },
-  "assistant": {
-    "default_model": {
-      "provider": "zed.dev",
-      "model": "claude-3-7-sonnet-latest"
-    },
-    "version": "2",
-    "enable_experimental_live_diffs": true
-  },
   "base_keymap": "VSCode",
   "ui_font_size": 16,
   "ui_font_family": "Noto Sans Mono",
@@ -57,6 +40,23 @@
   "inlay_hints": {
     "enabled": false,
     "show_background": true
+  },
+  "agent": {
+    "model_parameters": [],
+    "inline_assistant_model": {
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4-thinking"
+    },
+    "version": "2"
+  },
+  "collaboration_panel": {
+    "dock": "right"
+  },
+  "features": {
+    "edit_prediction_provider": "zed"
+  },
+  "edit_predictions": {
+    "mode": "subtle"
   },
   "languages": {
     "Python": {
