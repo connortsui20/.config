@@ -58,8 +58,7 @@
     "inline_assistant_model": {
       "provider": "zed.dev",
       "model": "claude-sonnet-4"
-    },
-    "version": "2"
+    }
   },
   "collaboration_panel": {
     "dock": "right"
@@ -90,8 +89,10 @@
   },
   "lsp": {
     "rust-analyzer": {
-      // A special flag for rust-analyzer integration, to use server-provided tasks
-      "enable_lsp_tasks": true,
+      "binary": {
+        "path": "/home/connor/.cargo/bin/rust-analyzer",
+        "arguments": []
+      },
       "initialization_options": {
         "check": {
           "command": "clippy"
@@ -106,9 +107,6 @@
             "enable": "always"
           }
         }
-      },
-      "cargo": {
-        "extraEnv": "stable"
       }
     }
   }
