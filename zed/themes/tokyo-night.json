@@ -156,12 +156,14 @@
             "font_weight": null
           },
           "comment": {
-            "color": "#ffffff",
+            // "color": "#51597d",
+            "color": "#9ece6a",
             "font_style": null,
             "font_weight": null
           },
           "comment.doc": {
-            "color": "#cccccc",
+            // "color": "#51597d",
+            "color": "#ffffff",
             "font_style": null,
             "font_weight": null
           },
