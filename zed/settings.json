@@ -31,17 +31,6 @@
       "delay_ms": 1000
     }
   },
-  "file_scan_exclusions": [
-    // "**/.git",
-    // "**/.svn",
-    // "**/.hg",
-    // "**/.jj",
-    // "**/CVS",
-    // "**/.DS_Store",
-    // "**/Thumbs.db",
-    // "**/.classpath",
-    // "**/.settings"
-  ],
   "file_scan_inclusions": [".env*", ".gitignore"],
   "inlay_hints": {
     "enabled": false,
