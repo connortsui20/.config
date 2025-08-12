@@ -1,11 +1,12 @@
 {
+  "vim_mode": false,
   "base_keymap": "VSCode",
   "ui_font_size": 16,
   "ui_font_family": "Noto Sans Mono",
   "buffer_font_size": 14,
   "buffer_font_family": "Noto Sans Mono",
   "theme": {
-    "mode": "dark",
+    "mode": "system",
     "light": "GitLab Light",
     "dark": "Tokyo Night (Custom)"
   },
@@ -37,7 +38,7 @@
     "show_background": true
   },
   "agent": {
-    "always_allow_tool_actions": true,
+    "always_allow_tool_actions": false,
     "default_profile": "write",
     "default_model": {
       "provider": "zed.dev",

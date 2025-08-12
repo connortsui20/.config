@@ -66,16 +66,16 @@ wrap-at-text-width = true
 # Rebind for escaping insert mode.
 # The "keep_primary_selection" is for getting rid of multiple cursors
 # Also saves on exiting insert mode (broken!)
-j = { k = ["keep_primary_selection", "normal_mode"] }
-k = { j = ["keep_primary_selection", "normal_mode"] }
+# j = { k = ["keep_primary_selection", "normal_mode"] }
+# k = { j = ["keep_primary_selection", "normal_mode"] }
 
 # Be able to save inside insert mode (broken!)
 C-s = ["normal_mode", ":w"]
 
 [keys.select]
 # Same as insert mode
-j = { k = ["keep_primary_selection", "normal_mode", ":w"] }
-k = { j = ["keep_primary_selection", "normal_mode", ":w"] }
+# j = { k = ["keep_primary_selection", "normal_mode", ":w"] }
+# k = { j = ["keep_primary_selection", "normal_mode", ":w"] }
 
 [keys.normal]
 # Easy save (ideally should save after delay)
