@@ -1,10 +1,6 @@
 # Remove the default fish greeting.
 set fish_greeting ""
 
-if status is-interactive
-    fastfetch
-end
-
 # Set up all environment variables.
 set -gx EDITOR hx
 set -gx XDG_CONFIG_HOME "$HOME/.config"

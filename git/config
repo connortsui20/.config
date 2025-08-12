@@ -1,7 +1,7 @@
 [user]
     name = Connor Tsui
     email = connor.tsui20@gmail.com
-    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKMdThS1ecL0QU6yGTyQFYDqIGBqn4cZBjlNdsQnF/hZ
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINrnyRHcXUrFs1Cz91k4ieVg1JoqMywTu2mcGPutmzl8
 [init]
     defaultBranch = main
 [core]
@@ -10,7 +10,7 @@
     autocrlf = input
     fsmonitor = true
     untrackedCache = true
-    pager = delta
+	pager = less
 [pull]
     rebase = true
 [fetch]
@@ -69,3 +69,7 @@
     l = log
     d = diff
     amd = commit --amend
+[gpg]
+    format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign

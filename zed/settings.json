@@ -80,7 +80,7 @@
   "lsp": {
     "rust-analyzer": {
       "binary": {
-        "path": "/home/connor/.cargo/bin/rust-analyzer",
+        "path": "/Users/connor/.cargo/bin/rust-analyzer",
         "arguments": []
       },
       "initialization_options": {

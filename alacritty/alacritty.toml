@@ -28,12 +28,12 @@ hide_when_typing = false
 save_to_clipboard = true
 
 [general]
-import = ["/home/connor/.config/alacritty/alacritty-theme/themes/tokyo_night_enhanced.toml"]
-# import = ["/home/connor/.config/alacritty/alacritty-theme/themes/github_light.toml"]
+import = ["/Users/connor/.config/alacritty/alacritty-theme/themes/tokyo_night_enhanced.toml"]
+# import = ["/Users/connor/.config/alacritty/alacritty-theme/themes/github_light.toml"]
 
 [terminal]
 
 [terminal.shell]
-program = "/usr/bin/fish"
-args = ["-l", "-c", "/usr/bin/zellij -l compact"]
+program = "/opt/homebrew/bin/fish"
+args = ["-l", "-c", "/opt/homebrew/bin/zellij -l compact"]
 # args = ["-l", "-c", "tmux"]
