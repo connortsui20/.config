@@ -1,7 +1,7 @@
 [user]
     name = Connor Tsui
     email = connor.tsui20@gmail.com
-    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKMdThS1ecL0QU6yGTyQFYDqIGBqn4cZBjlNdsQnF/hZ
+    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPPhNFUAQi/gxsx7yFIi5mXcHl5YMk88sH3g0Dr2Fghb
 [init]
     defaultBranch = main
 [core]
@@ -53,19 +53,20 @@
     addIgnoredFile = false
 [help]
     autocorrect = prompt
-[gpg]
-    format = ssh
-[gpg "ssh"]
-    program = /opt/1Password/op-ssh-sign
 [alias]
-    c = commit
+    c = commit --signoff
     ch = checkout
     b = branch
-    ba = branch -a
+    ba = branch --all
     a = add
     s = status
     r = rebase
     rc = rebase --continue
+    ra = rebase --abort
     l = log
     d = diff
-    amd = commit --amend
+    amd = commit --amend --signoff
+[gpg]
+    format = ssh
+[gpg "ssh"]
+    program = /opt/1Password/op-ssh-sign
