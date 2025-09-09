@@ -10,7 +10,7 @@
     autocrlf = input
     fsmonitor = true
     untrackedCache = true
-	pager = less
+	pager = delta
 [pull]
     rebase = true
 [fetch]
@@ -53,22 +53,19 @@
     addIgnoredFile = false
 [help]
     autocorrect = prompt
-[gpg]
-    format = ssh
-[gpg "ssh"]
-    program = /opt/1Password/op-ssh-sign
 [alias]
-    c = commit
+    c = commit --signoff
     ch = checkout
     b = branch
-    ba = branch -a
+    ba = branch --all
     a = add
     s = status
     r = rebase
     rc = rebase --continue
+    rc = rebase --abort
     l = log
     d = diff
-    amd = commit --amend
+    amd = commit --amend --signoff
 [gpg]
     format = ssh
 [gpg "ssh"]

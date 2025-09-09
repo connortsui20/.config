@@ -1,4 +1,7 @@
 {
+  // Convenience setting if I want to temporarily disable the servers.
+  // "enable_language_server": false,
+
   "vim_mode": false,
   "base_keymap": "VSCode",
   "ui_font_size": 16,
@@ -14,25 +17,42 @@
   "tabs": {
     "file_icons": true,
     "git_status": true,
-    "show_diagnostics": "all"
+    "show_diagnostics": "all",
+    "activate_on_close": "left_neighbour"
   },
   "terminal": {
     "dock": "right",
-    "font_size": 10,
-    "font_family": "Noto Sans Mono"
+    "font_size": 14,
+    "font_family": "Noto Sans Mono",
+    "cursor_shape": "bar",
+    "copy_on_select": true
   },
   "autosave": {
     "after_delay": {
       "milliseconds": 1000
     }
   },
+  "restore_on_startup": "last_workspace",
+  "when_closing_with_no_tabs": "keep_window_open",
   "git": {
     "inline_blame": {
       "enabled": true,
       "delay_ms": 1000
     }
   },
-  "file_scan_inclusions": [".env*", ".gitignore"],
+  "file_scan_exclusions": [
+    // "**/.git",
+    "**/.svn",
+    "**/.hg",
+    // "**/.jj",
+    "**/.repo",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings"
+  ],
+  "file_scan_inclusions": [".env*", "**/.git", ".gitignore"],
   "inlay_hints": {
     "enabled": false,
     "show_background": true
@@ -47,7 +67,7 @@
     "model_parameters": [],
     "inline_assistant_model": {
       "provider": "zed.dev",
-      "model": "claude-sonnet-4"
+      "model": "claude-opus-4-1"
     }
   },
   "collaboration_panel": {
@@ -84,6 +104,9 @@
         "arguments": []
       },
       "initialization_options": {
+        "cargo": {
+          "targetDir": true
+        },
         "check": {
           "command": "clippy"
         },

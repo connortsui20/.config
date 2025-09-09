@@ -1,8 +1,9 @@
 [[language]]
 name = "rust"
 
-[language-server.rust-analyzer.config.check]
-command = "clippy"
+[language-server.rust-analyzer.config]
+check = { command = "clippy" }
+cargo = { targetDir = true }
 
 [[language]]
 name = "python"
