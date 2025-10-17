@@ -62,7 +62,6 @@
     s = status
     r = rebase
     rc = rebase --continue
-    rc = rebase --abort
     ra = rebase --abort
     l = log
     d = diff

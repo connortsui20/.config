@@ -2,6 +2,7 @@
   // Convenience setting if I want to temporarily disable the servers.
   // "enable_language_server": false,
 
+  "enable_language_server": true,
   "vim_mode": false,
   "base_keymap": "VSCode",
   "ui_font_size": 16,
@@ -24,6 +25,7 @@
     "dock": "right",
     "font_size": 14,
     "font_family": "Noto Sans Mono",
+    "line_height": "comfortable",
     "cursor_shape": "bar",
     "copy_on_select": true
   },
@@ -58,16 +60,16 @@
     "show_background": true
   },
   "agent": {
-    "always_allow_tool_actions": false,
+    "always_allow_tool_actions": true,
     "default_profile": "write",
     "default_model": {
       "provider": "zed.dev",
-      "model": "claude-sonnet-4-thinking"
+      "model": "claude-opus-4-1-thinking"
     },
     "model_parameters": [],
     "inline_assistant_model": {
       "provider": "zed.dev",
-      "model": "claude-opus-4-1"
+      "model": "claude-opus-4-1-thinking"
     }
   },
   "collaboration_panel": {
@@ -118,6 +120,9 @@
           },
           "closureReturnTypeHints": {
             "enable": "always"
+          },
+          "closureCaptureHints": {
+            "enable": true
           }
         }
       }
