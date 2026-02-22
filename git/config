@@ -17,6 +17,7 @@
     prune = true
     pruneTags = true
     all = true
+    recurseSubmodules = false
 [push]
     autoSetupRemote = true
     followTags = true

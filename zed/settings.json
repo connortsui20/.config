@@ -9,36 +9,37 @@
   "buffer_font_size": 14,
   "buffer_font_family": "Noto Sans Mono",
   "theme": {
-    "mode": "system",
-    "light": "GitLab Light",
-    "dark": "Tokyo Night (Custom)"
+    "mode": "dark",
+    "light": "GitHub Light Classic",
+    "dark": "Tokyo Night (Custom)",
   },
   "wrap_guides": [100],
   "tabs": {
     "file_icons": true,
     "git_status": true,
     "show_diagnostics": "all",
-    "activate_on_close": "left_neighbour"
+    "activate_on_close": "left_neighbour",
   },
   "terminal": {
     "dock": "right",
     "font_size": 14,
     "font_family": "Noto Sans Mono",
+    "line_height": "comfortable",
     "cursor_shape": "bar",
-    "copy_on_select": true
+    "copy_on_select": true,
   },
   "autosave": {
     "after_delay": {
-      "milliseconds": 1000
-    }
+      "milliseconds": 1000,
+    },
   },
   "restore_on_startup": "last_workspace",
   "when_closing_with_no_tabs": "keep_window_open",
   "git": {
     "inline_blame": {
       "enabled": true,
-      "delay_ms": 1000
-    }
+      "delay_ms": 1000,
+    },
   },
   "file_scan_exclusions": [
     // "**/.git",
@@ -50,77 +51,75 @@
     "**/.DS_Store",
     "**/Thumbs.db",
     "**/.classpath",
-    "**/.settings"
+    "**/.settings",
   ],
   "file_scan_inclusions": [".env*", "**/.git", ".gitignore"],
   "inlay_hints": {
     "enabled": false,
-    "show_background": true
+    "show_background": true,
   },
   "agent": {
     "always_allow_tool_actions": false,
     "default_profile": "write",
     "default_model": {
       "provider": "zed.dev",
-      "model": "claude-sonnet-4-thinking"
+      "model": "claude-sonnet-4-thinking",
     },
     "model_parameters": [],
     "inline_assistant_model": {
       "provider": "zed.dev",
-      "model": "claude-opus-4-1"
-    }
+      "model": "claude-opus-4-6-thinking",
+    },
   },
   "collaboration_panel": {
-    "dock": "right"
-  },
-  "features": {
-    "edit_prediction_provider": "zed"
+    "dock": "right",
   },
   "edit_predictions": {
-    "mode": "subtle"
+    "provider": "zed",
+    "mode": "subtle",
   },
   "languages": {
     "Python": {
       "language_servers": ["pyright", "ruff"],
       "formatter": [
         {
-          "code_actions": {
-            "source.organizeImports.ruff": true,
-            "source.fixAll.ruff": true
-          }
+          "code_action": "source.organizeImports.ruff",
+        },
+        {
+          "code_action": "source.fixAll.ruff",
         },
         {
           "language_server": {
-            "name": "ruff"
-          }
-        }
-      ]
-    }
+            "name": "ruff",
+          },
+        },
+      ],
+    },
   },
   "lsp": {
     "rust-analyzer": {
       "binary": {
         "path": "/home/connor/.cargo/bin/rust-analyzer",
-        "arguments": []
+        "arguments": [],
       },
       "initialization_options": {
         "cargo": {
-          "targetDir": true
+          "targetDir": true,
         },
         "check": {
-          "command": "clippy"
+          "command": "clippy",
         },
         "inlayHints": {
           "maxLength": null,
           "lifetimeElisionHints": {
             "enable": "skip_trivial",
-            "useParameterNames": true
+            "useParameterNames": true,
           },
           "closureReturnTypeHints": {
-            "enable": "always"
-          }
-        }
-      }
-    }
-  }
+            "enable": "always",
+          },
+        },
+      },
+    },
+  },
 }
