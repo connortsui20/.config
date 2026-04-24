@@ -10,10 +10,14 @@ abbr -a cd z
 abbr -a pd "z .."
 abbr -a c cargo
 abbr -a g git
-abbr -a gp git push
+abbr -a gp "git push"
+abbr -a gs "git status"
+abbr -a gl "git log"
+abbr -a gb "git branch"
 abbr -a m "make -j (nproc)"
 abbr -a mc "make clean"
 abbr -a sshome "ssh connor@home.connortsui.com -p 2020"
+abbr -a awsp "aws --profile PowerUserAccess-375504701696"
 
 # Replace `cd` with `z` (`zoxide`).
 if command -v z >/dev/null
@@ -51,3 +55,11 @@ starship init fish | source
 
 # Initialize zoxide autojumper.
 zoxide init fish | source
+
+# Wasmer
+export WASMER_DIR="/Users/connor/.wasmer"
+[ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
