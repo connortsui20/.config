@@ -2,6 +2,17 @@
   // Convenience setting if I want to temporarily disable the servers.
   // "enable_language_server": false,
 
+  "cli_default_open_behavior": "new_window",
+  "project_panel": {
+    "dock": "left"
+  },
+  "outline_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
+  "enable_language_server": true,
   "vim_mode": false,
   "base_keymap": "VSCode",
   "ui_font_size": 16,
@@ -9,7 +20,7 @@
   "buffer_font_size": 14,
   "buffer_font_family": "Noto Sans Mono",
   "theme": {
-    "mode": "dark",
+    "mode": "system",
     "light": "GitHub Light Classic",
     "dark": "Tokyo Night (Custom)",
   },
@@ -42,10 +53,8 @@
     },
   },
   "file_scan_exclusions": [
-    // "**/.git",
     "**/.svn",
     "**/.hg",
-    // "**/.jj",
     "**/.repo",
     "**/CVS",
     "**/.DS_Store",
@@ -53,22 +62,27 @@
     "**/.classpath",
     "**/.settings",
   ],
-  "file_scan_inclusions": [".env*", "**/.git", ".gitignore"],
+  "file_scan_inclusions": [".env*", ".gitignore"],
   "inlay_hints": {
     "enabled": false,
     "show_background": true,
   },
   "agent": {
-    "always_allow_tool_actions": false,
+    "dock": "right",
+    "tool_permissions": {
+      "default": "allow",
+    },
     "default_profile": "write",
     "default_model": {
+      "effort": "max",
+      "enable_thinking": true,
       "provider": "zed.dev",
-      "model": "claude-sonnet-4-thinking",
+      "model": "claude-sonnet-4-6",
     },
     "model_parameters": [],
     "inline_assistant_model": {
       "provider": "zed.dev",
-      "model": "claude-opus-4-6-thinking",
+      "model": "claude-sonnet-4-6",
     },
   },
   "collaboration_panel": {
@@ -95,6 +109,23 @@
         },
       ],
     },
+    "Markdown": {
+      "preferred_line_length": 100,
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": [
+            "--prose-wrap",
+            "always",
+            "--print-width",
+            "100",
+            "--stdin-filepath",
+            "{buffer_path}"
+          ]
+        }
+      },
+      "format_on_save": "on"
+    }
   },
   "lsp": {
     "rust-analyzer": {
@@ -109,6 +140,12 @@
         "check": {
           "command": "clippy",
         },
+        "rustfmt": {
+          "extraArgs": ["+nightly"]
+        },
+        "procMacro": {
+          "enable": true
+        },
         "inlayHints": {
           "maxLength": null,
           "lifetimeElisionHints": {
@@ -118,7 +155,14 @@
           "closureReturnTypeHints": {
             "enable": "always",
           },
+          "closureCaptureHints": {
+            "enable": true,
+          },
         },
+        "cachePriming": {
+          "enable": false,
+        },
+        "numThreads": 16,
       },
     },
   },
