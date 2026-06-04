@@ -54,6 +54,43 @@
 [help]
     autocorrect = prompt
 [alias]
+    # Print the name of the default branch on origin (e.g. "main", "master"), by reading
+    # origin/HEAD and stripping the refs/remotes/origin/ prefix.
+    default-branch = "!git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'"
+
+    # Find the commit where the given branch (or HEAD if none given) last diverged from
+    # origin/<default-branch>. This is the base of your stack.
+    merge-base-origin = "!f() { \
+        git merge-base ${1-HEAD} origin/$(git default-branch); \
+    };f "
+
+    # List every local branch sitting on top of the merge-base, in order from oldest to HEAD.
+    # Useful for stacked-branch workflows: prints the ordered names of the branches that make up
+    # the current stack.
+    stack = "!f() { \
+        BRANCH=${1-HEAD}; \
+        MERGE_BASE=$(git merge-base-origin $BRANCH); \
+        git log \
+            --decorate-refs=refs/heads \
+            --simplify-by-decoration \
+            --pretty=format:\"%(decorate:prefix=,suffix=,tag=,separator=%n)\" \
+            $MERGE_BASE..$BRANCH; \
+    };f "
+
+    # Force-push every branch in the current stack to origin, using --force-with-lease for safety.
+    # Extra args are forwarded to each push, e.g. `git push-stack --no-verify`.
+    push-stack = "!f() { \
+        git stack | xargs -I {} git push --force-with-lease \"$@\" origin {}; \
+    };f "
+
+    # Refresh origin, then rebase the current branch onto the latest origin/<default-branch>. The
+    # merge-base computation keeps this safe for stacked branches: only commits unique to this
+    # branch are replayed.
+    rebase-on-default = "!f() { \
+        git fetch origin && \
+        git rebase \"$@\" $(git merge-base-origin) --onto origin/$(git default-branch); \
+    };f "
+
     c = commit --signoff
     ch = checkout
     b = branch
@@ -61,24 +98,16 @@
     a = add
     s = status
     r = rebase
-    rc = rebase --continue
-    ra = rebase --abort
     l = log
     d = diff
+    rc = rebase --continue
+    ra = rebase --abort
     amd = commit --amend --signoff
-    default-branch = "!git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'"
-    merge-base-origin ="!f() { git merge-base ${1-HEAD} origin/$(git default-branch); };f "
-    stack = "!f() { \
-        BRANCH=${1-HEAD}; \
-        MERGE_BASE=$(git mb $BRANCH); \
-        git log --decorate-refs=refs/heads --simplify-by-decoration --pretty=format:\"%(decorate:prefix=,suffix=,tag=,separator=%n)\" $MERGE_BASE..$BRANCH; \
-    };f "
-    push-stack = "!f() { \
-        git stack | xargs -I {} git push --force-with-lease \"$@\" origin {}; \
-    };f "
+
     db = default-branch
     mb = merge-base-origin
     ps = push-stack
+    rod = rebase-on-default
 [gpg]
     format = ssh
 [gpg "ssh"]
