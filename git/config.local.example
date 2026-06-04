@@ -1,0 +1,14 @@
+# Per-machine git settings. Copy this file to `config.local` in the same directory and fill in this
+# machine's values. `config.local` is gitignored (machine-local); this `.example` is tracked as a
+# template. `git/config` includes `config.local`, and committing is gpg-signed, so `config.local`
+# MUST exist before this machine can commit.
+#
+# The signing key is this machine's 1Password SSH public key (a different key per machine). The
+# `op-ssh-sign` program path differs by OS:
+#   macOS: /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+#   Linux: /opt/1Password/op-ssh-sign
+
+[user]
+    signingkey = ssh-ed25519 AAAA...REPLACE_WITH_THIS_MACHINES_1PASSWORD_PUBLIC_KEY
+[gpg "ssh"]
+    program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign

@@ -9,9 +9,6 @@ shape = "Beam"
 [env]
 TERM = "xterm-256color"
 
-[font]
-size = 16
-
 [font.bold]
 family = "Noto Sans Mono"
 
@@ -28,12 +25,12 @@ hide_when_typing = false
 save_to_clipboard = true
 
 [general]
-import = ["/Users/connor/.config/alacritty/alacritty-theme/themes/tokyo_night_enhanced.toml"]
-# import = ["/Users/connor/.config/alacritty/alacritty-theme/themes/github_light.toml"]
-
-[terminal]
-
-[terminal.shell]
-program = "/opt/homebrew/bin/fish"
-args = ["-l", "-c", "/opt/homebrew/bin/zellij -l compact"]
-# args = ["-l", "-c", "tmux"]
+# The theme path is relative to this file, so it resolves on any machine regardless of the home
+# directory layout (`/home/connor` versus `/Users/connor`). The `alacritty.local.toml` import is
+# last, so the machine-specific `font.size` and `terminal.shell` it defines take precedence. That
+# file is gitignored and created once per machine from `alacritty.local.toml.example`.
+import = [
+    "alacritty-theme/themes/tokyo_night_enhanced.toml",
+    "alacritty.local.toml",
+]
+# import = ["alacritty-theme/themes/github_light.toml"]

@@ -1,0 +1,16 @@
+# Per-machine alacritty overrides. Copy this file to `alacritty.local.toml` in the same directory
+# and set this machine's values. `alacritty.local.toml` is gitignored (machine-local); this
+# `.example` is tracked as a template. `alacritty.toml` imports `alacritty.local.toml` last, so the
+# values here take precedence.
+#
+# `font.size` is per-display (for example 16 on the Mac, 12 on the Linux desktop). The shell
+# program and zellij path differ by OS:
+#   macOS: /opt/homebrew/bin/fish, /opt/homebrew/bin/zellij
+#   Linux: /usr/bin/fish, /usr/bin/zellij
+
+[font]
+size = 16
+
+[terminal.shell]
+program = "/opt/homebrew/bin/fish"
+args = ["-l", "-c", "/opt/homebrew/bin/zellij -l compact"]

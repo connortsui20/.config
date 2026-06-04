@@ -4,7 +4,6 @@ set fish_greeting ""
 # Set up all environment variables.
 set -gx EDITOR hx
 set -gx XDG_CONFIG_HOME "$HOME/.config"
-set -gx SSH_AUTH_SOCK "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 
 # Abbreviations.
 abbr -a cd z
@@ -51,16 +50,42 @@ function d
     end
 end
 
-# Initialize starship prompter.
-starship init fish | source
+# Set up the `PATH`. These directories exist on both machines and are added with `fish_add_path -g`
+# (global, session scope) so the `PATH` is driven by this file rather than the now-untracked
+# universal `fish_variables`.
+fish_add_path -g $HOME/.cargo/bin $HOME/.local/bin
 
-# Initialize zoxide autojumper.
-zoxide init fish | source
+# Machine-specific environment and paths. Everything that legitimately differs between the Linux
+# and macOS machines lives in this `switch`, keyed off `uname`, so the rest of this file stays
+# byte-identical across both machines.
+switch (uname)
+    case Darwin
+        # Route SSH (and therefore 1Password commit signing) through the 1Password SSH agent.
+        set -gx SSH_AUTH_SOCK "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 
-# Wasmer
-export WASMER_DIR="/Users/connor/.wasmer"
-[ -s "$WASMER_DIR/wasmer.sh" ] && source "$WASMER_DIR/wasmer.sh"
+        # Homebrew and the Homebrew-provided LLVM and OpenJDK toolchains.
+        fish_add_path -g /opt/homebrew/bin /opt/homebrew/opt/llvm/bin /opt/homebrew/opt/openjdk/bin
 
-# bun
-set --export BUN_INSTALL "$HOME/.bun"
-set --export PATH $BUN_INSTALL/bin $PATH
+        # bun.
+        set -gx BUN_INSTALL "$HOME/.bun"
+        fish_add_path -g $BUN_INSTALL/bin
+
+        # Wasmer.
+        if test -d "$HOME/.wasmer"
+            set -gx WASMER_DIR "$HOME/.wasmer"
+            fish_add_path -g $WASMER_DIR/bin
+        end
+    case Linux
+        # Statically-linked `clang-format`.
+        fish_add_path -g /opt/clang-format-static
+end
+
+# Initialize the starship prompt.
+if command -v starship >/dev/null
+    starship init fish | source
+end
+
+# Initialize the zoxide autojumper.
+if command -v zoxide >/dev/null
+    zoxide init fish | source
+end

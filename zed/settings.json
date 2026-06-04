@@ -43,7 +43,7 @@
   "buffer_font_size": 14,
   "buffer_font_family": "Noto Sans Mono",
   "theme": {
-    "mode": "dark",
+    "mode": "system",
     "light": "GitHub Light",
     "dark": "Tokyo Night (Custom)",
   },
@@ -154,10 +154,6 @@
   },
   "lsp": {
     "rust-analyzer": {
-      "binary": {
-        "path": "/Users/connor/.cargo/bin/rust-analyzer",
-        "arguments": [],
-      },
       "initialization_options": {
         "cargo": {
           "targetDir": true,
