@@ -1,14 +1,18 @@
-# Per-machine git settings. Copy this file to `config.local` in the same directory and fill in this
-# machine's values. `config.local` is gitignored (machine-local); this `.example` is tracked as a
-# template. `git/config` includes `config.local`, and committing is gpg-signed, so `config.local`
-# MUST exist before this machine can commit.
+# Per-machine git settings. Copy this file to `config.local` in the same directory, set the signing
+# key, and keep ONE `program` line below. `config.local` is gitignored (machine-local); this
+# `.example` is tracked as a template. `git/config` includes `config.local` and commits are signed
+# (commit.gpgsign = true), so `config.local` MUST exist before this machine can commit.
 #
-# The signing key is this machine's 1Password SSH public key (a different key per machine). The
-# `op-ssh-sign` program path differs by OS:
-#   macOS: /Applications/1Password.app/Contents/MacOS/op-ssh-sign
-#   Linux: /opt/1Password/op-ssh-sign
+# signingkey = this machine's 1Password SSH PUBLIC key (a different key per machine). Find it in the
+# 1Password app, or list the agent's keys:
+#   macOS:  ssh-add -L                                        (SSH_AUTH_SOCK is set in config.fish)
+#   Linux:  SSH_AUTH_SOCK=~/.1password/agent.sock ssh-add -L
 
 [user]
     signingkey = ssh-ed25519 AAAA...REPLACE_WITH_THIS_MACHINES_1PASSWORD_PUBLIC_KEY
+
 [gpg "ssh"]
+    # macOS (default):
     program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+    # Linux (uncomment, comment out macOS above):
+    # program = /opt/1Password/op-ssh-sign
