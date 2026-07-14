@@ -80,6 +80,12 @@ switch (uname)
         fish_add_path -g /opt/clang-format-static
 end
 
+# Initialize `pnpm`.
+set -gx PNPM_HOME "$HOME/.local/share/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+    set -gx PATH "$PNPM_HOME" $PATH
+end
+
 # Initialize the starship prompt.
 if command -v starship >/dev/null
     starship init fish | source
