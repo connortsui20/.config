@@ -26,9 +26,15 @@ save_to_clipboard = true
 
 [general]
 # The theme path is relative to this file, so it resolves on any machine regardless of the home
-# directory layout (`/home/connor` versus `/Users/connor`). The `alacritty.local.toml` import is
-# last, so the machine-specific `font.size` and `terminal.shell` it defines take precedence. That
-# file is gitignored and created once per machine from `alacritty.local.toml.example`.
+# directory layout (`/home/connor` versus `/Users/connor`).
+#
+# `alacritty.local.toml` holds the machine-specific `font.size` and `terminal.shell`. It is
+# gitignored and created once per machine from `alacritty.local.toml.example`; a missing import is
+# skipped silently, so a machine without it falls back to the login shell instead of fish + zellij.
+#
+# Note that alacritty loads the *importing* file last, so any key set below overrides every import,
+# including `alacritty.local.toml`. Anything that needs a per-machine value must therefore be absent
+# from this file entirely rather than merely defaulted here.
 import = [
     "alacritty-theme/themes/tokyo_night_enhanced.toml",
     "alacritty.local.toml",

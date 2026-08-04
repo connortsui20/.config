@@ -44,10 +44,12 @@
   "buffer_font_family": "Noto Sans Mono",
   "theme": {
     "mode": "system",
-    "light": "GitHub Light",
+    "light": "GitHub Light Classic",
     "dark": "Tokyo Night (Custom)",
   },
   "wrap_guides": [100],
+  "preferred_line_length": 100,
+  "soft_wrap": "bounded",
   "tabs": {
     "file_icons": true,
     "git_status": true,
@@ -100,7 +102,7 @@
     "tool_permissions": {
       "default": "allow",
     },
-    "default_profile": "ask",
+    "default_profile": "write",
     "default_model": {
       "effort": "high",
       "enable_thinking": true,
@@ -110,7 +112,7 @@
     "model_parameters": [],
     "inline_assistant_model": {
       "provider": "zed.dev",
-      "model": "claude-opus-4-6",
+      "model": "claude-opus-5",
     },
   },
   "collaboration_panel": {
@@ -149,7 +151,7 @@
         },
       },
       "format_on_save": "on",
-      "soft_wrap": "none",
+      "soft_wrap": "bounded",
     },
   },
   "lsp": {
@@ -160,6 +162,12 @@
         },
         "check": {
           "command": "clippy",
+        },
+        // Both machines have 16 logical cores, so this is a shared value rather than a per-machine
+        // one. Zed has no include mechanism, so it would have to be a compromise either way.
+        "numThreads": 16,
+        "cachePriming": {
+          "enable": false,
         },
         "rustfmt": {
           "extraArgs": ["+nightly"],

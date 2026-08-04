@@ -55,8 +55,20 @@
     autocorrect = prompt
 [alias]
     # Print the name of the default branch on origin (e.g. "main", "master"), by reading
-    # origin/HEAD and stripping the refs/remotes/origin/ prefix.
-    default-branch = "!git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'"
+    # origin/HEAD and stripping the origin/ prefix. A fresh clone may have no origin/HEAD at all,
+    # in which case ask the remote for it once rather than failing every alias built on this one.
+    default-branch = "!f() { \
+        REF=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null); \
+        if [ -z \"$REF\" ]; then \
+            git remote set-head origin --auto >/dev/null 2>&1; \
+            REF=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null); \
+        fi; \
+        if [ -z \"$REF\" ]; then \
+            echo 'origin/HEAD is unset and could not be resolved' >&2; \
+            return 1; \
+        fi; \
+        echo \"${REF#origin/}\"; \
+    };f "
 
     # Find the commit where the given branch (or HEAD if none given) last diverged from
     # origin/<default-branch>. This is the base of your stack.
@@ -64,9 +76,13 @@
         git merge-base ${1-HEAD} origin/$(git default-branch); \
     };f "
 
-    # List every local branch sitting on top of the merge-base, in order from oldest to HEAD.
-    # Useful for stacked-branch workflows: prints the ordered names of the branches that make up
-    # the current stack.
+    # List every local branch sitting on top of the merge-base, ordered from HEAD down to the
+    # oldest, since git log is reverse-chronological. Useful for stacked-branch workflows: prints
+    # the names of the branches that make up the current stack.
+    #
+    # --simplify-by-decoration keeps commits referenced by any ref, while --decorate-refs limits
+    # printing to local branches, so a commit held only by a tag or a remote ref yields an empty
+    # line. Those are dropped here so callers never see a blank branch name.
     stack = "!f() { \
         BRANCH=${1-HEAD}; \
         MERGE_BASE=$(git merge-base-origin $BRANCH); \
@@ -74,7 +90,8 @@
             --decorate-refs=refs/heads \
             --simplify-by-decoration \
             --pretty=format:\"%(decorate:prefix=,suffix=,tag=,separator=%n)\" \
-            $MERGE_BASE..$BRANCH; \
+            $MERGE_BASE..$BRANCH \
+        | grep -v '^$'; \
     };f "
 
     # Force-push every branch in the current stack to origin, using --force-with-lease for safety.
@@ -84,8 +101,10 @@
     };f "
 
     # Refresh origin, then rebase the current branch onto the latest origin/<default-branch>. The
-    # merge-base computation keeps this safe for stacked branches: only commits unique to this
-    # branch are replayed.
+    # merge-base computation bounds the replay to commits unique to this stack, and the
+    # `rebase.updateRefs` setting above is what drags the intermediate branch refs along with it.
+    # Without that setting the lower branches in the stack would be left pointing at the abandoned
+    # commits, and `git stack` would silently stop listing them.
     rebase-on-default = "!f() { \
         git fetch origin && \
         git rebase \"$@\" $(git merge-base-origin) --onto origin/$(git default-branch); \
