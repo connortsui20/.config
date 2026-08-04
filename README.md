@@ -76,17 +76,19 @@ A machine that was on the old `main` or `macos` branch needs three things beyond
 above. Do all of them **before** opening a new shell, because the first two are only surprising if
 something has already written to the new location.
 
-1. **Relocate the Claude Code and Codex state.** `config.fish` now sets `CLAUDE_CONFIG_DIR` and
-   `CODEX_HOME` under `$XDG_CONFIG_HOME`; neither variable existed before the collapse. Both tools
-   otherwise start up looking like fresh installs, logged out and with no history. `claude/` already
-   exists here with tracked files in it, so copy into it rather than moving over it:
+1. **The Claude Code and Codex state relocates itself.** `config.fish` now sets `CLAUDE_CONFIG_DIR`
+   and `CODEX_HOME` under `$XDG_CONFIG_HOME`; neither variable existed before the collapse, so both
+   tools would otherwise start up looking like fresh installs. The first new shell copies the old
+   directories across and then never does it again, so there is nothing to run by hand — just open a
+   shell before launching either tool, and watch for the `Migrating …` line.
+
+   The one case that needs attention: the copy needs `rsync`, and if it is missing the shell says so
+   and does nothing. Install `rsync`, or do it manually:
 
    ```sh
    rsync -a --exclude settings.json --exclude .gitignore ~/.claude/ ~/.config/claude/
    rsync -a ~/.codex/ ~/.config/codex/
    ```
-
-   This is one-time. Once the state lives in the new location, nothing here recurs.
 
 2. **Recover this machine's signing key.** It used to be committed in `git/config`, and the two
    machines had different keys, so read the value off the branch this machine was on before writing

@@ -11,9 +11,9 @@ set -gx CODEX_HOME "$XDG_CONFIG_HOME/codex"
 
 # Relocate state that predates the two variables above. A machine configured before they existed
 # keeps its credentials and history under `~/.claude` and `~/.codex`, and both tools would otherwise
-# start up looking like fresh installs. The sentinel is a file that only exists once the new location
-# has been used, so this runs at most once per machine and is a no-op everywhere else. It has to run
-# here, ahead of anything that might launch either tool.
+# start up looking like fresh installs. The sentinel is a file that only exists once the new
+# location has been used, so this runs at most once per machine and is a no-op everywhere else. It 
+# has to run here, ahead of anything that might launch either tool.
 function __migrate_state_dir --argument-names old new sentinel
     test -d "$old" -a ! -e "$new/$sentinel" || return 0
 
