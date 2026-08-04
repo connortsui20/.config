@@ -1,7 +1,6 @@
 [user]
     name = Connor Tsui
     email = connor.tsui20@gmail.com
-    signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPPhNFUAQi/gxsx7yFIi5mXcHl5YMk88sH3g0Dr2Fghb
 [init]
     defaultBranch = main
 [core]
@@ -55,6 +54,62 @@
 [help]
     autocorrect = prompt
 [alias]
+    # Print the name of the default branch on origin (e.g. "main", "master"), by reading
+    # origin/HEAD and stripping the origin/ prefix. A fresh clone may have no origin/HEAD at all,
+    # in which case ask the remote for it once rather than failing every alias built on this one.
+    default-branch = "!f() { \
+        REF=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null); \
+        if [ -z \"$REF\" ]; then \
+            git remote set-head origin --auto >/dev/null 2>&1; \
+            REF=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null); \
+        fi; \
+        if [ -z \"$REF\" ]; then \
+            echo 'origin/HEAD is unset and could not be resolved' >&2; \
+            return 1; \
+        fi; \
+        echo \"${REF#origin/}\"; \
+    };f "
+
+    # Find the commit where the given branch (or HEAD if none given) last diverged from
+    # origin/<default-branch>. This is the base of your stack.
+    merge-base-origin = "!f() { \
+        git merge-base ${1-HEAD} origin/$(git default-branch); \
+    };f "
+
+    # List every local branch sitting on top of the merge-base, ordered from HEAD down to the
+    # oldest, since git log is reverse-chronological. Useful for stacked-branch workflows: prints
+    # the names of the branches that make up the current stack.
+    #
+    # --simplify-by-decoration keeps commits referenced by any ref, while --decorate-refs limits
+    # printing to local branches, so a commit held only by a tag or a remote ref yields an empty
+    # line. Those are dropped here so callers never see a blank branch name.
+    stack = "!f() { \
+        BRANCH=${1-HEAD}; \
+        MERGE_BASE=$(git merge-base-origin $BRANCH); \
+        git log \
+            --decorate-refs=refs/heads \
+            --simplify-by-decoration \
+            --pretty=format:\"%(decorate:prefix=,suffix=,tag=,separator=%n)\" \
+            $MERGE_BASE..$BRANCH \
+        | grep -v '^$'; \
+    };f "
+
+    # Force-push every branch in the current stack to origin, using --force-with-lease for safety.
+    # Extra args are forwarded to each push, e.g. `git push-stack --no-verify`.
+    push-stack = "!f() { \
+        git stack | xargs -I {} git push --force-with-lease \"$@\" origin {}; \
+    };f "
+
+    # Refresh origin, then rebase the current branch onto the latest origin/<default-branch>. The
+    # merge-base computation bounds the replay to commits unique to this stack, and the
+    # `rebase.updateRefs` setting above is what drags the intermediate branch refs along with it.
+    # Without that setting the lower branches in the stack would be left pointing at the abandoned
+    # commits, and `git stack` would silently stop listing them.
+    rebase-on-default = "!f() { \
+        git fetch origin && \
+        git rebase \"$@\" $(git merge-base-origin) --onto origin/$(git default-branch); \
+    };f "
+
     c = commit --signoff
     ch = checkout
     b = branch
@@ -62,12 +117,21 @@
     a = add
     s = status
     r = rebase
-    rc = rebase --continue
-    ra = rebase --abort
     l = log
     d = diff
+    rc = rebase --continue
+    ra = rebase --abort
     amd = commit --amend --signoff
+
+    db = default-branch
+    mb = merge-base-origin
+    ps = push-stack
+    rod = rebase-on-default
 [gpg]
     format = ssh
-[gpg "ssh"]
-    program = /opt/1Password/op-ssh-sign
+
+# The SSH signing key and the 1Password `op-ssh-sign` program path differ per machine, so they
+# live in the gitignored `config.local` (created once per machine from `config.local.example`).
+# This include is last, so its values take precedence over anything set above.
+[include]
+    path = config.local

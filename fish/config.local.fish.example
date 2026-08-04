@@ -1,0 +1,7 @@
+# Per-machine fish settings. Copy this file to `config.local.fish` in the same directory and fill in
+# this machine's values. `config.local.fish` is gitignored (machine-local); this `.example` is
+# tracked as a template. `config.fish` sources `config.local.fish` last, so anything set here
+# overrides the shared configuration.
+#
+# This repository is public, so anything that identifies an account, a host, or an employer belongs
+# here rather than in `config.fish`.

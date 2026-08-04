@@ -9,9 +9,6 @@ shape = "Beam"
 [env]
 TERM = "xterm-256color"
 
-[font]
-size = 12
-
 [font.bold]
 family = "Noto Sans Mono"
 
@@ -28,12 +25,18 @@ hide_when_typing = false
 save_to_clipboard = true
 
 [general]
-import = ["/home/connor/.config/alacritty/alacritty-theme/themes/tokyo_night_enhanced.toml"]
-# import = ["/home/connor/.config/alacritty/alacritty-theme/themes/github_light.toml"]
-
-[terminal]
-
-[terminal.shell]
-program = "/usr/bin/fish"
-args = ["-l", "-c", "/usr/bin/zellij -l compact"]
-# args = ["-l", "-c", "tmux"]
+# The theme path is relative to this file, so it resolves on any machine regardless of the home
+# directory layout (`/home/connor` versus `/Users/connor`).
+#
+# `alacritty.local.toml` holds the machine-specific `font.size` and `terminal.shell`. It is
+# gitignored and created once per machine from `alacritty.local.toml.example`; a missing import is
+# skipped silently, so a machine without it falls back to the login shell instead of fish + zellij.
+#
+# Note that alacritty loads the *importing* file last, so any key set below overrides every import,
+# including `alacritty.local.toml`. Anything that needs a per-machine value must therefore be absent
+# from this file entirely rather than merely defaulted here.
+import = [
+    "alacritty-theme/themes/tokyo_night_enhanced.toml",
+    "alacritty.local.toml",
+]
+# import = ["alacritty-theme/themes/github_light.toml"]

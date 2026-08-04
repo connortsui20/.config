@@ -1,0 +1,11 @@
+[git_status]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[package]
+disabled = true
+
+[aws]
+disabled = true

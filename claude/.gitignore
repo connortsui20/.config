@@ -1,0 +1,14 @@
+# Claude Code keeps its entire state under `$CLAUDE_CONFIG_DIR`, which `fish/config.fish` points at
+# this directory. That means conversation transcripts (`projects/`), `history.jsonl`, `sessions/`,
+# `shell-snapshots/`, and `.claude.json` all live inside a public git repository.
+#
+# The root `.gitignore` already excludes everything with `/*`, so nothing here is tracked by
+# accident today. This file is a second layer: if the root pattern is ever narrowed, the default
+# here stays "ignore everything" and only the two files below become trackable.
+#
+# Neither layer survives `git add -f .`, which bypasses all ignore rules. Force-add individual
+# paths, never a directory.
+
+*
+!.gitignore
+!settings.json

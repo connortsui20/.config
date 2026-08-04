@@ -1,0 +1,67 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo +nightly fmt:*)",
+      "Bash(cargo fmt:*)",
+      "Bash(cargo check:*)",
+      "Bash(cargo clippy:*)",
+      "Bash(cargo build:*)",
+      "Bash(cargo doc:*)",
+      "Bash(cargo search:*)",
+      "Bash(cargo tree:*)",
+      "Bash(cargo test:*)",
+      "Bash(RUST_BACKTRACE=1 cargo test:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(gh:*)",
+      "Bash(find:*)",
+      "Bash(fd:*)",
+      "Bash(sed:*)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "auto"
+  },
+  "model": "opus",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.config/bin/claude-statusline.sh"
+  },
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "codex@openai-codex": true,
+    "spiral@spiraldb-agent-skills": true,
+    "code-review@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true,
+    "plugin-dev@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    },
+    "spiraldb-agent-skills": {
+      "source": {
+        "source": "git",
+        "url": "git@github.com:spiraldb/agent-skills.git"
+      }
+    }
+  },
+  "effortLevel": "xhigh",
+  "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true
+}

@@ -1,0 +1,19 @@
+# Per-machine alacritty overrides. Copy this file to `alacritty.local.toml` in the same directory,
+# then keep ONE OS block below and adjust `font.size`. `alacritty.local.toml` is gitignored
+# (machine-local); this `.example` is tracked as a template. `alacritty.toml` imports
+# `alacritty.local.toml` last, so the values here take precedence.
+#
+# `font.size` is per-display: 16 on the Mac, 12 on the Linux desktop.
+
+[font]
+size = 16   # macOS; use 12 on the Linux desktop
+
+# --- macOS (default) ---
+[terminal.shell]
+program = "/opt/homebrew/bin/fish"
+args = ["-l", "-c", "/opt/homebrew/bin/zellij -l compact"]
+
+# --- Linux (uncomment this block, delete the macOS one above) ---
+# [terminal.shell]
+# program = "/usr/bin/fish"
+# args = ["-l", "-c", "/usr/bin/zellij -l compact"]
