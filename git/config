@@ -110,6 +110,16 @@
         git rebase \"$@\" $(git merge-base-origin) --onto origin/$(git default-branch); \
     };f "
 
+    # `rebase-on-default` for every worktree at once. Scratch worktrees, meaning the ones whose
+    # branch is named after the directory holding them, are rebased unasked; anything else, and
+    # anything with uncommitted changes, prompts first. It lives in a script file rather than
+    # inline here because it needs per-worktree case analysis and interactive prompts.
+    #
+    # It also fetches once and pins origin/<default-branch> to a single commit up front, rather
+    # than resolving the ref per worktree the way `rebase-on-default` does. Otherwise a push
+    # landing partway through the run would leave the worktrees spread across two different tips.
+    rod-all = "!\"$HOME\"/.config/bin/git-rod-all"
+
     c = commit --signoff
     ch = checkout
     b = branch

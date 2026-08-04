@@ -1,0 +1,354 @@
+#!/usr/bin/env bash
+#
+# git-rod-all: rebase every worktree in this repository onto the latest origin
+# default branch.
+#
+# This is `git rod` applied across all worktrees, with one difference: origin is
+# fetched exactly once and the target commit is pinned up front, so every
+# worktree lands on the identical tip even if someone pushes mid-run.
+#
+# A worktree is treated as scratch when its branch name equals its directory
+# name, for example branch `vortex3` in `.../vortex3`. Scratch worktrees are
+# rebased without asking. Anything else, and any worktree with uncommitted
+# changes, is prompted for.
+
+set -uo pipefail
+
+readonly PROG=git-rod-all
+
+# Results accumulated for the closing summary, one "status<TAB>name<TAB>branch<TAB>detail" per line.
+results=()
+dry_run=0
+
+if [ -t 1 ]; then
+    readonly C_RESET=$'\033[0m' C_DIM=$'\033[2m' C_BOLD=$'\033[1m'
+    readonly C_RED=$'\033[31m' C_GREEN=$'\033[32m' C_YELLOW=$'\033[33m' C_BLUE=$'\033[34m'
+else
+    readonly C_RESET='' C_DIM='' C_BOLD='' C_RED='' C_GREEN='' C_YELLOW='' C_BLUE=''
+fi
+
+die() {
+    printf '%s: %s\n' "$PROG" "$*" >&2
+    exit 1
+}
+
+usage() {
+    cat <<'EOF'
+usage: git rod-all [--dry-run]
+
+Rebase every worktree in this repository onto the latest origin default branch.
+
+Fetches origin once, pins the default branch tip, then visits each worktree:
+
+  branch name == worktree directory name, clean    rebased automatically
+  branch name == worktree directory name, dirty    prompts to stash/rebase/pop
+  any other branch name                            prompts before touching
+  detached HEAD, locked, rebase/merge in progress  skipped
+
+Options:
+  -n, --dry-run   show what would happen to each worktree, change nothing
+  -h, --help      show this help
+
+On conflict the rebase is aborted and the branch is restored to its original
+commit. A stash that fails to pop is left in place and reported.
+EOF
+}
+
+record() {
+    results+=("$1"$'\t'"$2"$'\t'"$3"$'\t'"$4")
+}
+
+# Resolve the default branch, preferring the user's own `git default-branch`
+# alias so the two stay consistent, falling back to reading origin/HEAD.
+default_branch() {
+    local branch
+    if branch=$(git default-branch 2>/dev/null) && [ -n "$branch" ]; then
+        printf '%s\n' "$branch"
+        return 0
+    fi
+    branch=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null) \
+        || die "cannot determine origin's default branch; try: git remote set-head origin --auto"
+    printf '%s\n' "${branch#origin/}"
+}
+
+# True when a worktree has a rebase, merge, cherry-pick, revert, or bisect underway.
+operation_in_progress() {
+    local gitdir=$1
+    [ -e "$gitdir/rebase-merge" ] \
+        || [ -e "$gitdir/rebase-apply" ] \
+        || [ -e "$gitdir/MERGE_HEAD" ] \
+        || [ -e "$gitdir/CHERRY_PICK_HEAD" ] \
+        || [ -e "$gitdir/REVERT_HEAD" ] \
+        || [ -e "$gitdir/BISECT_LOG" ]
+}
+
+# Prompt on the terminal rather than stdin, so this still works when the
+# worktree list is being consumed by the caller. Declines when there is no tty.
+confirm() {
+    local reply
+    [ -r /dev/tty ] || return 1
+    printf '        %s [y/N] ' "$1" >/dev/tty
+    read -r reply </dev/tty || return 1
+    case $reply in
+        y | Y | yes | YES | Yes) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+# Rebase one worktree onto $tip, stashing first if it is dirty. Prints its own
+# outcome line and records a summary entry.
+rebase_worktree() {
+    local path=$1 name=$2 branch=$3 base=$4 before=$5 dirty=$6
+    local stashed=0 output after
+
+    if [ "$dirty" -gt 0 ]; then
+        if ! output=$(git -C "$path" stash push --include-untracked \
+            --message "$PROG: $branch" 2>&1); then
+            printf '        %sstash failed%s: %s\n' "$C_RED" "$C_RESET" "$output"
+            record FAIL "$name" "$branch" "stash failed, not rebased"
+            return 1
+        fi
+        stashed=1
+    fi
+
+    if output=$(git -C "$path" rebase --onto "$tip" "$base" 2>&1); then
+        printf '        %srebased%s onto %s\n' "$C_GREEN" "$C_RESET" "${tip:0:10}"
+    else
+        git -C "$path" rebase --abort >/dev/null 2>&1
+        after=$(git -C "$path" rev-parse HEAD 2>/dev/null)
+        if [ "$after" = "$before" ]; then
+            printf '        %srebase failed%s, aborted and restored %s\n' \
+                "$C_RED" "$C_RESET" "${before:0:10}"
+            record FAIL "$name" "$branch" "conflict, aborted and restored"
+        else
+            printf '        %srebase failed and HEAD is %s, not %s%s\n' \
+                "$C_RED" "${after:0:10}" "${before:0:10}" "$C_RESET"
+            record FAIL "$name" "$branch" "conflict, NEEDS MANUAL REPAIR"
+        fi
+        printf '%s\n' "$output" | sed 's/^/          /' >&2
+        # Give the stash back so the changes are where they were found.
+        if [ "$stashed" -eq 1 ] && ! git -C "$path" stash pop >/dev/null 2>&1; then
+            printf '        %sstash could not be popped, left in the stash list%s\n' \
+                "$C_YELLOW" "$C_RESET"
+        fi
+        return 1
+    fi
+
+    if [ "$stashed" -eq 1 ]; then
+        if git -C "$path" stash pop >/dev/null 2>&1; then
+            record OK "$name" "$branch" "rebased, stash restored"
+        else
+            printf '        %sstash pop conflicted, stash retained%s (git -C %s stash list)\n' \
+                "$C_YELLOW" "$C_RESET" "$path"
+            record WARN "$name" "$branch" "rebased, STASH RETAINED"
+        fi
+    else
+        record OK "$name" "$branch" "rebased"
+    fi
+    return 0
+}
+
+main() {
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -n | --dry-run) dry_run=1 ;;
+            -h | --help)
+                usage
+                return 0
+                ;;
+            *) die "unknown option '$1' (try --help)" ;;
+        esac
+        shift
+    done
+
+    git rev-parse --git-dir >/dev/null 2>&1 || die "not inside a git repository"
+    git remote get-url origin >/dev/null 2>&1 || die "no 'origin' remote"
+
+    local branch_name
+    branch_name=$(default_branch)
+
+    if [ "$dry_run" -eq 1 ]; then
+        printf '%s%s%s (dry run, nothing will change)\n' "$C_BOLD" "$PROG" "$C_RESET"
+    fi
+    printf 'fetching origin ...\n'
+    git fetch --quiet origin || die "fetch failed"
+
+    # Pin the target so every worktree lands on the same commit.
+    local tip subject
+    tip=$(git rev-parse "origin/$branch_name") \
+        || die "cannot resolve origin/$branch_name"
+    readonly tip
+    subject=$(git log -1 --format=%s "$tip")
+    printf 'target: %sorigin/%s%s at %s%s%s  %s%s%s\n\n' \
+        "$C_BOLD" "$branch_name" "$C_RESET" "$C_BLUE" "${tip:0:10}" "$C_RESET" \
+        "$C_DIM" "$subject" "$C_RESET"
+
+    # Parse the whole worktree list into arrays before acting on anything, so
+    # the prompts later are not competing with a live pipeline. Deliberately
+    # avoids mapfile, which stock macOS bash 3.2 does not have.
+    local -a paths=() heads=() branches=() flags=()
+    local cur_path='' cur_head='' cur_branch='' cur_flags=''
+    flush_record() {
+        [ -n "$cur_path" ] || return 0
+        paths[${#paths[@]}]=$cur_path
+        heads[${#heads[@]}]=$cur_head
+        branches[${#branches[@]}]=$cur_branch
+        flags[${#flags[@]}]=$cur_flags
+    }
+    local line
+    while IFS= read -r line; do
+        case $line in
+            "worktree "*)
+                flush_record
+                cur_path=${line#worktree }
+                cur_head='' cur_branch='' cur_flags=''
+                ;;
+            "HEAD "*) cur_head=${line#HEAD } ;;
+            "branch "*) cur_branch=${line#branch } ;;
+            bare | detached) cur_flags="$cur_flags ${line}" ;;
+            "locked"* | "prunable"*) cur_flags="$cur_flags ${line%% *}" ;;
+        esac
+    done < <(git worktree list --porcelain)
+    flush_record
+
+    [ "${#paths[@]}" -gt 0 ] || die "no worktrees found"
+
+    local i path name head wt_branch flag gitdir short base ahead dirty
+    local prompt_reason kind
+    for i in "${!paths[@]}"; do
+        path=${paths[i]}
+        head=${heads[i]}
+        wt_branch=${branches[i]}
+        flag=${flags[i]}
+        name=$(basename "$path")
+
+        case " $flag " in
+            *" bare "*) continue ;;
+        esac
+
+        printf '%s%-10s%s ' "$C_BOLD" "$name" "$C_RESET"
+
+        case " $flag " in
+            *" locked "*)
+                printf '%sskipped%s: worktree is locked\n' "$C_YELLOW" "$C_RESET"
+                record SKIP "$name" '-' "locked"
+                continue
+                ;;
+        esac
+
+        if [ ! -d "$path" ]; then
+            printf '%sskipped%s: directory is missing\n' "$C_YELLOW" "$C_RESET"
+            record SKIP "$name" '-' "directory missing"
+            continue
+        fi
+
+        gitdir=$(git -C "$path" rev-parse --absolute-git-dir 2>/dev/null)
+        if [ -z "$gitdir" ]; then
+            printf '%sskipped%s: cannot resolve its git dir\n' "$C_YELLOW" "$C_RESET"
+            record SKIP "$name" '-' "unreadable git dir"
+            continue
+        fi
+
+        # Check this before the detached test: git reports a worktree as
+        # detached while a rebase is underway, and "rebase in progress" is the
+        # more useful thing to be told.
+        if operation_in_progress "$gitdir"; then
+            printf '%sskipped%s: rebase or merge in progress\n' "$C_YELLOW" "$C_RESET"
+            record SKIP "$name" '-' "operation in progress"
+            continue
+        fi
+
+        if [ -z "$wt_branch" ]; then
+            printf '%sskipped%s: detached HEAD at %s\n' "$C_YELLOW" "$C_RESET" "${head:0:10}"
+            record SKIP "$name" "(detached)" "detached HEAD"
+            continue
+        fi
+        short=${wt_branch#refs/heads/}
+
+        if [ "$head" = "$tip" ]; then
+            printf '%salready at %s%s\n' "$C_DIM" "${tip:0:10}" "$C_RESET"
+            record OK "$name" "$short" "already up to date"
+            continue
+        fi
+
+        base=$(git -C "$path" merge-base HEAD "$tip" 2>/dev/null)
+        if [ -z "$base" ]; then
+            printf '%sskipped%s: no merge base with origin/%s\n' \
+                "$C_YELLOW" "$C_RESET" "$branch_name"
+            record SKIP "$name" "$short" "no merge base"
+            continue
+        fi
+        ahead=$(git -C "$path" rev-list --count "$base..HEAD")
+        dirty=$(git -C "$path" status --porcelain | wc -l | tr -d ' ')
+
+        # Scratch worktrees are the ones whose branch is named after the
+        # directory holding them. Those are safe to rebase unasked.
+        prompt_reason=''
+        if [ "$short" != "$name" ]; then
+            prompt_reason="branch '$short' does not match worktree '$name'"
+        elif [ "$dirty" -gt 0 ]; then
+            prompt_reason="$dirty uncommitted change(s)"
+        fi
+
+        if [ "$ahead" -gt 0 ]; then
+            kind="replay $ahead commit(s)"
+        else
+            kind="fast-forward"
+        fi
+
+        if [ "$dry_run" -eq 1 ]; then
+            if [ -n "$prompt_reason" ]; then
+                printf '%swould prompt%s: %s (%s)\n' "$C_YELLOW" "$C_RESET" "$prompt_reason" "$kind"
+                record PROMPT "$name" "$short" "$kind, would ask: $prompt_reason"
+            else
+                printf '%swould rebase%s: %s\n' "$C_GREEN" "$C_RESET" "$kind"
+                record PLAN "$name" "$short" "$kind"
+            fi
+            continue
+        fi
+
+        if [ -n "$prompt_reason" ]; then
+            printf '%s%s%s\n' "$C_YELLOW" "$prompt_reason" "$C_RESET"
+            if ! confirm "rebase '$short' onto ${tip:0:10} ($kind)?"; then
+                if [ -r /dev/tty ]; then
+                    printf '        %sleft alone%s\n' "$C_DIM" "$C_RESET"
+                    record SKIP "$name" "$short" "declined"
+                else
+                    printf '        %sleft alone%s: no terminal to prompt on\n' "$C_DIM" "$C_RESET"
+                    record SKIP "$name" "$short" "needed a prompt, no tty"
+                fi
+                continue
+            fi
+        else
+            printf '%s, %s\n' "$kind" "${C_DIM}scratch${C_RESET}"
+        fi
+
+        rebase_worktree "$path" "$name" "$short" "$base" "$head" "$dirty"
+    done
+
+    # Summary. Guarded because bash 3.2 treats an empty array expansion as an
+    # unbound variable under `set -u`.
+    printf '\n%ssummary%s\n' "$C_BOLD" "$C_RESET"
+    local entry r_status r_name r_branch r_detail colour
+    local -i failures=0
+    if [ "${#results[@]}" -gt 0 ]; then
+        for entry in "${results[@]}"; do
+            IFS=$'\t' read -r r_status r_name r_branch r_detail <<<"$entry"
+            case $r_status in
+                OK | PLAN) colour=$C_GREEN ;;
+                SKIP) colour=$C_DIM ;;
+                WARN | PROMPT) colour=$C_YELLOW ;;
+                *)
+                    colour=$C_RED
+                    failures+=1
+                    ;;
+            esac
+            printf '  %s%-6s%s %-10s %-28s %s\n' \
+                "$colour" "$r_status" "$C_RESET" "$r_name" "$r_branch" "$r_detail"
+        done
+    fi
+
+    [ "$failures" -eq 0 ]
+}
+
+main "$@"
