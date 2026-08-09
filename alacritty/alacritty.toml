@@ -25,8 +25,9 @@ hide_when_typing = false
 save_to_clipboard = true
 
 [general]
-# The theme path is relative to this file, so it resolves on any machine regardless of the home
-# directory layout (`/home/connor` versus `/Users/connor`).
+# The first theme is the portable fallback. On KDE, `update-theme` copies the light or dark variant
+# to `active-theme.toml`; the systemd user units rerun it when Plasma changes `kdeglobals`. The file
+# is machine-local and a missing import is skipped silently, so macOS keeps the dark fallback.
 #
 # `alacritty.local.toml` holds the machine-specific `font.size` and `terminal.shell`. It is
 # gitignored and created once per machine from `alacritty.local.toml.example`; a missing import is
@@ -37,6 +38,6 @@ save_to_clipboard = true
 # from this file entirely rather than merely defaulted here.
 import = [
     "alacritty-theme/themes/tokyo_night_enhanced.toml",
+    "active-theme.toml",
     "alacritty.local.toml",
 ]
-# import = ["alacritty-theme/themes/github_light.toml"]

@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch the KDE color scheme for Alacritty
+
+[Path]
+PathChanged=%h/.config/kdeglobals
+Unit=alacritty-theme.service
+
+[Install]
+WantedBy=default.target

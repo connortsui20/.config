@@ -1,0 +1,9 @@
+[Unit]
+Description=Synchronize the Alacritty theme with KDE
+
+[Service]
+Type=oneshot
+ExecStart=%h/.config/alacritty/update-theme
+
+[Install]
+WantedBy=default.target

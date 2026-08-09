@@ -44,6 +44,12 @@ Then, in order:
    cp ~/.config/alacritty/alacritty.local.toml.example ~/.config/alacritty/alacritty.local.toml
    ```
 
+   On KDE, enable the user units that keep Alacritty's colors in sync with Plasma's color scheme:
+
+   ```sh
+   systemctl --user enable --now alacritty-theme.service alacritty-theme.path
+   ```
+
 3. **Private fish settings**, if this machine needs any.
 
    ```sh
