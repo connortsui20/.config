@@ -9,28 +9,6 @@ set -gx XDG_CONFIG_HOME "$HOME/.config"
 set -gx CLAUDE_CONFIG_DIR "$XDG_CONFIG_HOME/claude"
 set -gx CODEX_HOME "$XDG_CONFIG_HOME/codex"
 
-# Relocate state that predates the two variables above. A machine configured before they existed
-# keeps its credentials and history under `~/.claude` and `~/.codex`, and both tools would otherwise
-# start up looking like fresh installs. The sentinel is a file that only exists once the new
-# location has been used, so this runs at most once per machine and is a no-op everywhere else. It
-# has to run here, ahead of anything that might launch either tool.
-function __migrate_state_dir --argument-names old new sentinel
-    test -d "$old" -a ! -e "$new/$sentinel" || return 0
-
-    if not command -v rsync >/dev/null
-        echo "$old needs migrating to $new, but rsync is not installed." >&2
-        return 1
-    end
-
-    # The excludes protect the tracked files that already live in the destination.
-    echo "Migrating $old to $new." >&2
-    rsync -a --exclude settings.json --exclude .gitignore "$old/" "$new/"
-end
-
-__migrate_state_dir "$HOME/.claude" "$CLAUDE_CONFIG_DIR" projects
-__migrate_state_dir "$HOME/.codex" "$CODEX_HOME" auth.json
-functions -e __migrate_state_dir
-
 # Abbreviations.
 abbr -a pd "z .."
 abbr -a c cargo
@@ -75,13 +53,14 @@ function d
     end
 end
 
-# `fish_user_paths` used to live in the universal `fish_variables`, which synced through git and so
-# leaked each machine's paths into the other. It is untracked now, but an existing universal value
-# survives on disk and still seeds the `PATH` ahead of everything below, because `fish_add_path`
-# skips directories that are already present. Erase it so this file is the only thing that decides
-# the `PATH`. The `-qU` guard keeps this from rewriting `fish_variables` on every shell startup.
-if set -qU fish_user_paths
-    set -eU fish_user_paths
+function awake --description "Run a command and keep the machine awake"
+    if type -q caffeinate
+        caffeinate -dis $argv
+    else if type -q systemd-inhibit
+        systemd-inhibit --what=idle:sleep --who=awake --why="long task" $argv
+    else
+        $argv
+    end
 end
 
 # Machine-specific environment and paths. Everything that legitimately differs between the Linux

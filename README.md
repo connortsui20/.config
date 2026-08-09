@@ -50,65 +50,12 @@ Then, in order:
    cp ~/.config/fish/config.local.fish.example ~/.config/fish/config.local.fish
    ```
 
-4. **Clear the old universal fish variables.** `fish_user_paths` used to be synced through the
-   tracked `fish_variables`, so both machines' paths ended up in both machines' `PATH`. It is
-   untracked now, but any existing universal value survives locally and takes precedence over
-   `config.fish`, because `fish_add_path` skips directories that are already present.
-   `config.fish` erases it on next startup, so this is only needed if you want it gone immediately:
-
-   ```sh
-   set -eU fish_user_paths
-   ```
-
-   Verify with `set -S fish_user_paths` — there should be no universal scope, and no `/home/connor`
-   entries on macOS or `/Users/connor` entries on Linux.
-
-5. **Set `origin/HEAD`** if the clone did not. The `git default-branch` alias, and the stacked-branch
+4. **Set `origin/HEAD`** if the clone did not. The `git default-branch` alias, and the stacked-branch
    aliases built on it, resolve this automatically now, but doing it up front avoids the round trip:
 
    ```sh
    git remote set-head origin --auto
    ```
-
-## Migrating a machine that predates the collapse
-
-A machine that was on the old `main` or `macos` branch needs three things beyond the bootstrap
-above. Do all of them **before** opening a new shell, because the first two are only surprising if
-something has already written to the new location.
-
-1. **The Claude Code and Codex state relocates itself.** `config.fish` now sets `CLAUDE_CONFIG_DIR`
-   and `CODEX_HOME` under `$XDG_CONFIG_HOME`; neither variable existed before the collapse, so both
-   tools would otherwise start up looking like fresh installs. The first new shell copies the old
-   directories across and then never does it again, so there is nothing to run by hand — just open a
-   shell before launching either tool, and watch for the `Migrating …` line.
-
-   The one case that needs attention: the copy needs `rsync`, and if it is missing the shell says so
-   and does nothing. Install `rsync`, or do it manually:
-
-   ```sh
-   rsync -a --exclude settings.json --exclude .gitignore ~/.claude/ ~/.config/claude/
-   rsync -a ~/.codex/ ~/.config/codex/
-   ```
-
-2. **Recover this machine's signing key.** It used to be committed in `git/config`, and the two
-   machines had different keys, so read the value off the branch this machine was on before writing
-   `git/config.local`:
-
-   ```sh
-   git show origin/main:git/config | grep signingkey   # the Linux desktop's key
-   git log --all --oneline -S signingkey -- git/config # every commit that touched one
-   ```
-
-3. **Check the universal fish paths before the first new shell erases them.** `config.fish` drops the
-   universal `fish_user_paths` on startup, so confirm it holds nothing this file does not already
-   reproduce:
-
-   ```sh
-   set -S fish_user_paths
-   ```
-
-   Every entry should be either a directory the `switch (uname)` block adds back, or the other
-   machine's leftovers. Anything else needs a home in `config.fish` first.
 
 ## Per-machine files
 
