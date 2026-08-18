@@ -6,7 +6,11 @@ config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
 alacritty_dir="$config_home/alacritty"
 active_theme="$alacritty_dir/active-theme.toml"
 
-color_scheme=$(kreadconfig6 --file kdeglobals --group General --key ColorScheme)
+# Plasma adds its per-user defaults directory to XDG_CONFIG_DIRS during session startup. This
+# service can run before that happens, so include the directory explicitly to avoid briefly
+# selecting the system-wide light default at login.
+color_scheme=$(XDG_CONFIG_DIRS="$config_home/kdedefaults${XDG_CONFIG_DIRS:+:$XDG_CONFIG_DIRS}" \
+    kreadconfig6 --file kdeglobals --group General --key ColorScheme)
 case $color_scheme in
     *[Dd]ark*) theme=tokyo_night_enhanced ;;
     *)         theme=tokyo_night_light ;;
