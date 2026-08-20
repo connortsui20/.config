@@ -92,11 +92,11 @@ switch (uname)
 end
 
 # Initialize `pnpm`. This sets `PATH` directly rather than going through `fish_add_path`, because
-# `fish_add_path` skips directories that do not exist yet and `PNPM_HOME` is not created until the
-# first global install.
+# `fish_add_path` skips directories that do not exist yet and pnpm's global bin directory is not
+# created until the first global install.
 set -gx PNPM_HOME "$HOME/.local/share/pnpm"
-if not string match -q -- $PNPM_HOME $PATH
-    set -gx PATH "$PNPM_HOME" $PATH
+if not string match -q -- $PNPM_HOME/bin $PATH
+    set -gx PATH "$PNPM_HOME/bin" $PATH
 end
 
 # Directories that exist on both machines. These come last on purpose: `-m` (`--move`) makes every
