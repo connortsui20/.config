@@ -22,10 +22,11 @@ git clone --recurse-submodules git@github.com:connortsui20/.config.git ~/.config
 
 Then, in order:
 
-1. **Agent skills.** Check out the skills repository at `~/projects/skills`, including its submodules.
+1. **Agent skills.** Check out `git@github.com:connortsui20/skills.git` at `~/projects/skills`.
    Then run:
 
    ```sh
+   ~/projects/skills/bin/setup
    ~/.config/bin/setup-agents --dry-run
    ~/.config/bin/setup-agents
    ```
@@ -34,6 +35,8 @@ Then, in order:
    `~/.config/agents.before-config`, which stays untracked. Repeated runs keep the existing link.
    If link creation fails, the script restores the original directory from that backup.
    Check the backup for additional skills before removing it.
+   The script also backs up old Codex copies of `gh-stack` and `slidev` under
+   `~/.config/agents/installed-skills.before-repo`, so Codex uses the shared versions.
 
 2. **Git signing.** Copy the template and fill in this machine's values. Commits are signed
    (`commit.gpgsign = true`) and `git/config` includes `config.local`, so **you cannot commit until
@@ -93,23 +96,34 @@ a separate comparison of their config and saved state.
 The shared skills use the same relative links on Linux and macOS:
 
 ```text
-~/.agents                         -> .config/agents
-~/.config/agents/skills/<name>     -> ../../../projects/skills/<name>
-~/.config/claude/skills/<name>     -> ../../agents/skills/<name>
+~/.agents                -> .config/agents
+~/.config/agents/skills   -> ../../projects/skills
+~/.config/claude/skills   -> ../agents/skills
 ```
 
-Git tracks the skill links here. The skills repository tracks their contents. Both machines need
-the skills checkout at `~/projects/skills`. Claude's `simple-english` output style also links into
-that checkout. Its vendor submodule must be initialized.
+Git tracks the two directory links here. The skills repository tracks their contents. New skills
+in that checkout become available to both tools without additional links in this repository.
+Both machines need the skills checkout at `~/projects/skills`. Claude's `simple-english` output
+style also links into that checkout. Its vendor submodule must be initialized.
+
+The skills repository pins `gh-stack`, `slidev`, and `simple-english` as upstream Git submodules.
+Run `~/projects/skills/bin/setup` after pulling that repository to restore its recorded versions.
+Run `~/projects/skills/bin/update-vendor` to fetch upstream updates for review. Commit those
+revision changes in the skills repository, then pull and run setup on the other machine.
+
+When upgrading from the old per-skill links, preserve an existing `claude/skills` directory before
+pulling this repository. Untracked files inside it can prevent Git from replacing it with the
+directory symlink. Move that directory to an unused backup path such as `claude/skills.before-repo`.
+The old Codex copies are handled by `bin/setup-agents` after the pull.
 
 Codex discovers user skills through `~/.agents/skills`, independently of `CODEX_HOME`. Claude reads
 its personal skills from `$CLAUDE_CONFIG_DIR/skills`. Both tools support symlinked skill directories.
 See the [Codex skills documentation](https://learn.chatgpt.com/docs/build-skills) and
 [Claude skills documentation](https://code.claude.com/docs/en/skills).
 
-`codex/config.toml` and the separately installed `gh-stack` and `slidev` skills remain untracked.
-They need separate setup on a new machine. Plugin caches, credentials, and session history also
-stay untracked.
+`codex/config.toml` remains untracked and needs separate setup on a new machine. Plugin caches,
+credentials, session history, and migration backups also stay untracked. Skill submodules contain
+instructions, so the `gh stack` executable and Slidev project dependencies need their own installs.
 
 ## Per-machine files
 

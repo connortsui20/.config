@@ -15,17 +15,48 @@ if ! [ "$config_dir" -ef "$HOME/.config" ]; then
     printf 'Run this script from the repository at ~/.config.\n' >&2
     exit 1
 fi
+found_skill=false
 for skill in "$config_dir"/agents/skills/*; do
-    if [ ! -f "$skill/SKILL.md" ]; then
-        printf 'Missing skill: %s/SKILL.md. Update ~/projects/skills and its submodules.\n' \
-            "$skill" >&2
+    if [ -L "$skill" ] && [ ! -e "$skill" ]; then
+        printf 'Broken link: %s. Update ~/projects/skills and its submodules.\n' "$skill" >&2
         exit 1
     fi
+    if [ -f "$skill/SKILL.md" ]; then
+        found_skill=true
+    fi
 done
+if [ "$found_skill" = false ]; then
+    printf 'No skills found. Check out the skills repository at ~/projects/skills.\n' >&2
+    exit 1
+fi
+
+backup_legacy_skills() {
+    for name in gh-stack slidev; do
+        legacy="$config_dir/codex/skills/$name"
+        saved="$config_dir/agents/installed-skills.before-repo/codex-$name"
+        if [ ! -e "$legacy" ] && [ ! -L "$legacy" ]; then
+            continue
+        fi
+        if [ ! -s "$config_dir/agents/skills/$name/SKILL.md" ]; then
+            printf 'Missing shared skill: %s. Keeping the old copy.\n' "$name" >&2
+            exit 1
+        fi
+        if [ -e "$saved" ] || [ -L "$saved" ]; then
+            printf 'Backup already exists: %s. Keeping %s.\n' "$saved" "$legacy" >&2
+            exit 1
+        fi
+        printf 'Move %s to %s\n' "$legacy" "$saved"
+        if [ "$dry_run" = false ]; then
+            mkdir -p "$(dirname -- "$saved")"
+            mv "$legacy" "$saved"
+        fi
+    done
+}
 
 destination="$HOME/.agents"
 if [ -L "$destination" ] && [ "$destination" -ef "$config_dir/agents" ]; then
     printf '~/.agents already links to ~/.config/agents.\n'
+    backup_legacy_skills
     exit 0
 fi
 
@@ -53,3 +84,4 @@ if [ "$dry_run" = false ]; then
         exit 1
     fi
 fi
+backup_legacy_skills
