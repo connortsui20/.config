@@ -1,8 +1,8 @@
 # Dotfiles
 
-`~/.config` for two machines: a macOS laptop and a CachyOS Linux desktop. One branch, one set of
-files, byte-identical on both. Everything that genuinely differs per machine lives in a gitignored
-`*.local*` file next to a tracked `.example` template.
+`~/.config` for a macOS laptop and a CachyOS Linux desktop. Shared files use one branch on both
+machines. OS-specific paths live in the Fish `switch` or an untracked `*.local*` file with a tracked
+`.example` template. Public paths can be hardcoded. Credentials stay untracked.
 
 ## Layout notes
 
@@ -12,8 +12,7 @@ Two things about this repository surprise people (including future me):
   keeps Claude Code's transcripts and caches under `claude/` out of a public repository. Adding a
   new file therefore needs `git add -f path/to/file`. Never `git add -f .` — that bypasses every
   ignore rule and would sweep in the whole state directory.
-- **The repository is public.** Account identifiers, work hostnames, and anything else that should
-  not be indexed belong in `fish/config.local.fish`, not in a tracked file.
+- **The repository is public.** Private shell values belong in `fish/config.local.fish`.
 
 ## Bootstrapping a new machine
 
@@ -23,7 +22,20 @@ git clone --recurse-submodules git@github.com:connortsui20/.config.git ~/.config
 
 Then, in order:
 
-1. **Git signing.** Copy the template and fill in this machine's values. Commits are signed
+1. **Agent skills.** Check out the skills repository at `~/projects/skills`, including its submodules.
+   Then run:
+
+   ```sh
+   ~/.config/bin/setup-agents --dry-run
+   ~/.config/bin/setup-agents
+   ```
+
+   The script links `~/.agents` to `~/.config/agents`. It preserves an existing `~/.agents` at
+   `~/.config/agents.before-config`, which stays untracked. Repeated runs keep the existing link.
+   If link creation fails, the script restores the original directory from that backup.
+   Check the backup for additional skills before removing it.
+
+2. **Git signing.** Copy the template and fill in this machine's values. Commits are signed
    (`commit.gpgsign = true`) and `git/config` includes `config.local`, so **you cannot commit until
    this exists**. A missing include is silently skipped, so the failure shows up as a confusing
    signing error rather than a missing-file error.
@@ -36,7 +48,7 @@ Then, in order:
    `/Applications/1Password.app/Contents/MacOS/op-ssh-sign` on macOS or `/opt/1Password/op-ssh-sign`
    on Linux.
 
-2. **Alacritty.** Font size is per-display, and the fish and zellij paths differ by OS. A missing
+3. **Alacritty.** Font size is per-display, and the fish and zellij paths differ by OS. A missing
    `alacritty.local.toml` is skipped without a warning, and the symptom is a terminal that opens the
    login shell instead of fish + zellij.
 
@@ -50,18 +62,54 @@ Then, in order:
    systemctl --user enable --now alacritty-theme.service alacritty-theme.path
    ```
 
-3. **Private fish settings**, if this machine needs any.
+4. **Private Fish config**, if this machine needs any.
 
    ```sh
    cp ~/.config/fish/config.local.fish.example ~/.config/fish/config.local.fish
    ```
 
-4. **Set `origin/HEAD`** if the clone did not. The `git default-branch` alias, and the stacked-branch
+5. **Set `origin/HEAD`** if the clone did not. The `git default-branch` alias, and the stacked-branch
    aliases built on it, resolve this automatically now, but doing it up front avoids the round trip:
 
    ```sh
    git remote set-head origin --auto
    ```
+
+## Agent instructions and skills
+
+Edit `~/.config/AGENTS.md` for instructions shared by Codex and Claude Code. Both global instruction
+files are tracked relative symlinks:
+
+```text
+~/.config/codex/AGENTS.md  -> ../AGENTS.md
+~/.config/claude/CLAUDE.md -> ../AGENTS.md
+```
+
+Fish sets `CODEX_HOME=~/.config/codex` and `CLAUDE_CONFIG_DIR=~/.config/claude`. These variables apply
+to programs that inherit the Fish environment. Apps launched elsewhere can still use `~/.codex` or
+`~/.claude`. The setup script only redirects `~/.agents`. Consolidating the other directories needs
+a separate comparison of their config and saved state.
+
+The shared skills use the same relative links on Linux and macOS:
+
+```text
+~/.agents                         -> .config/agents
+~/.config/agents/skills/<name>     -> ../../../projects/skills/<name>
+~/.config/claude/skills/<name>     -> ../../agents/skills/<name>
+```
+
+Git tracks the skill links here. The skills repository tracks their contents. Both machines need
+the skills checkout at `~/projects/skills`. Claude's `simple-english` output style also links into
+that checkout. Its vendor submodule must be initialized.
+
+Codex discovers user skills through `~/.agents/skills`, independently of `CODEX_HOME`. Claude reads
+its personal skills from `$CLAUDE_CONFIG_DIR/skills`. Both tools support symlinked skill directories.
+See the [Codex skills documentation](https://learn.chatgpt.com/docs/build-skills) and
+[Claude skills documentation](https://code.claude.com/docs/en/skills).
+
+`codex/config.toml` and the separately installed `gh-stack` and `slidev` skills remain untracked.
+They need separate setup on a new machine. Plugin caches, credentials, and session history also
+stay untracked.
 
 ## Per-machine files
 

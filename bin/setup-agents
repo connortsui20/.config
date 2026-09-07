@@ -1,0 +1,55 @@
+#!/bin/sh
+
+set -eu
+
+config_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
+dry_run=false
+case ${1-} in
+    --dry-run) dry_run=true ;;
+    '') ;;
+    *) printf 'Usage: %s [--dry-run]\n' "$0" >&2; exit 1 ;;
+esac
+
+# Relative skill links require this repository at ~/.config and the skills at ~/projects/skills.
+if ! [ "$config_dir" -ef "$HOME/.config" ]; then
+    printf 'Run this script from the repository at ~/.config.\n' >&2
+    exit 1
+fi
+for skill in "$config_dir"/agents/skills/*; do
+    if [ ! -f "$skill/SKILL.md" ]; then
+        printf 'Missing skill: %s/SKILL.md. Update ~/projects/skills and its submodules.\n' \
+            "$skill" >&2
+        exit 1
+    fi
+done
+
+destination="$HOME/.agents"
+if [ -L "$destination" ] && [ "$destination" -ef "$config_dir/agents" ]; then
+    printf '~/.agents already links to ~/.config/agents.\n'
+    exit 0
+fi
+
+backup="$config_dir/agents.before-config"
+backed_up=false
+if [ -e "$destination" ] || [ -L "$destination" ]; then
+    if [ -e "$backup" ] || [ -L "$backup" ]; then
+        printf 'Backup already exists: %s. Move it before running setup again.\n' "$backup" >&2
+        exit 1
+    fi
+    printf 'Move %s to %s\n' "$destination" "$backup"
+    if [ "$dry_run" = false ]; then
+        mv "$destination" "$backup"
+        backed_up=true
+    fi
+fi
+
+printf 'Link %s -> .config/agents\n' "$destination"
+if [ "$dry_run" = false ]; then
+    if ! ln -s .config/agents "$destination"; then
+        if [ "$backed_up" = true ]; then
+            mv "$backup" "$destination"
+            printf 'Link creation failed. Restored %s.\n' "$destination" >&2
+        fi
+        exit 1
+    fi
+fi

@@ -1,0 +1,1 @@
+../../../projects/skills/vendor/simple-english/output-styles/simple-english.md

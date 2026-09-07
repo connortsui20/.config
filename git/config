@@ -139,6 +139,12 @@
     rod = rebase-on-default
 [gpg]
     format = ssh
+[credential "https://github.com"]
+    helper =
+    helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+    helper =
+    helper = !gh auth git-credential
 
 # The SSH signing key and the 1Password `op-ssh-sign` program path differ per machine, so they
 # live in the gitignored `config.local` (created once per machine from `config.local.example`).
