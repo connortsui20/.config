@@ -27,16 +27,11 @@ Then, in order:
 
    ```sh
    ~/projects/skills/bin/setup
-   ~/.config/bin/setup-agents --dry-run
-   ~/.config/bin/setup-agents
    ```
 
-   The script links `~/.agents` to `~/.config/agents`. It preserves an existing `~/.agents` at
-   `~/.config/agents.before-config`, which stays untracked. Repeated runs keep the existing link.
-   If link creation fails, the script restores the original directory from that backup.
-   Check the backup for additional skills before removing it.
-   The script also backs up old Codex copies of `gh-stack` and `slidev` under
-   `~/.config/agents/installed-skills.before-repo`, so Codex uses the shared versions.
+   The skills repository owns installation for both agents, including skill links and the
+   Simple English output style. It works independently of this dotfiles repository.
+   `bin/setup-agents` remains a convenience wrapper for that command and forwards its arguments.
 
 2. **Git signing.** Copy the template and fill in this machine's values. Commits are signed
    (`commit.gpgsign = true`) and `git/config` includes `config.local`, so **you cannot commit until
@@ -90,31 +85,37 @@ files are tracked relative symlinks:
 
 Fish sets `CODEX_HOME=~/.config/codex` and `CLAUDE_CONFIG_DIR=~/.config/claude`. These variables apply
 to programs that inherit the Fish environment. Apps launched elsewhere can still use `~/.codex` or
-`~/.claude`. The setup script only redirects `~/.agents`. Consolidating the other directories needs
-a separate comparison of their config and saved state.
+`~/.claude`. Skill setup respects these variables and existing directory aliases. Consolidating
+other agent directories needs a separate comparison of their config and saved state.
 
-The shared skills use the same relative links on Linux and macOS:
+The skills repository owns setup on Linux and macOS. Run `~/projects/skills/bin/setup` after
+pulling it. The command restores pinned submodules and installs individual skill links into each
+agent's skill directory. It also installs Claude's Simple English output style. Use `--dry-run`
+to preview link changes, or `--check` to verify the checkout without changing files.
+
+This machine retains its directory aliases:
 
 ```text
 ~/.agents                -> .config/agents
-~/.config/agents/skills   -> ../../projects/skills
 ~/.config/claude/skills   -> ../agents/skills
+~/.config/agents/skills/  # Local directory, ignored by Git
 ```
 
-Git tracks the two directory links here. The skills repository tracks their contents. New skills
-in that checkout become available to both tools without additional links in this repository.
-Both machines need the skills checkout at `~/projects/skills`. Claude's `simple-english` output
-style also links into that checkout. Its vendor submodule must be initialized.
+The installer follows these aliases without requiring them. On a machine without the dotfiles
+checkout, it uses the agents' standard directories. This repository tracks the Claude directory
+alias, but the generated skill links and local installations stay ignored.
 
-The skills repository pins `gh-stack`, `slidev`, and `simple-english` as upstream Git submodules.
-Run `~/projects/skills/bin/setup` after pulling that repository to restore its recorded versions.
-Run `~/projects/skills/bin/update-vendor` to fetch upstream updates for review. Commit those
-revision changes in the skills repository, then pull and run setup on the other machine.
+Install machine-specific skills through their own installers. Rex's skill stays outside the shared
+skills repository and its web bundle. The shared Claude startup hook uses Rex when it is installed
+and exits silently when it is absent. MCP server configuration and credentials remain local.
 
-When upgrading from the old per-skill links, preserve an existing `claude/skills` directory before
-pulling this repository. Untracked files inside it can prevent Git from replacing it with the
-directory symlink. Move that directory to an unused backup path such as `claude/skills.before-repo`.
-The old Codex copies are handled by `bin/setup-agents` after the pull.
+The skills installer preserves local skills and stops on name conflicts. It replaces old
+whole-checkout directory links and removes obsolete links to that checkout. If installers left
+untracked skills or `synced/` in `~/projects/skills`, move them into the local skills directory after
+setup. Old Codex copies of `gh-stack` and `slidev` move to `$CODEX_HOME/skills.before-shared`.
+
+Run `~/projects/skills/bin/update-vendor` to fetch upstream skill updates for review. Commit those
+revision changes in the skills repository, then pull and run its setup on the other machine.
 
 Codex discovers user skills through `~/.agents/skills`, independently of `CODEX_HOME`. Claude reads
 its personal skills from `$CLAUDE_CONFIG_DIR/skills`. Both tools support symlinked skill directories.
