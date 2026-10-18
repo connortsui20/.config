@@ -42,9 +42,12 @@
   "ui_font_family": "Noto Sans Mono",
   "buffer_font_size": 14,
   "buffer_font_family": "Noto Sans Mono",
+  "auto_install_extensions": {
+    "github-theme": true,
+  },
   "theme": {
     "mode": "system",
-    "light": "GitHub Light Classic",
+    "light": "GitHub Light",
     "dark": "Tokyo Night (Custom)",
   },
   "wrap_guides": [100],
