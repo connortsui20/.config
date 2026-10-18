@@ -99,8 +99,10 @@
     "show_background": true,
   },
   "agent": {
+    "threads_sidebar": {
+      "position": "right"
+    },
     "notify_when_agent_waiting": "all_screens",
-    "sidebar_side": "right",
     "dock": "right",
     "tool_permissions": {
       "default": "allow",
